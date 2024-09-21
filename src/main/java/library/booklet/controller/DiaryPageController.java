@@ -2,14 +2,9 @@ package library.booklet.controller;
 
 import library.booklet.dto.DiaryPageDTO;
 import library.booklet.mapper.DiaryPageMapper;
-import library.booklet.repository.DiaryPageRepository;
 import library.booklet.service.lesson.DiaryPageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,22 +15,23 @@ public class DiaryPageController {
     DiaryPageService diaryPageService;
 
     @Autowired
-    DiaryPageRepository diaryPageRepository;
-
-    @Autowired
     DiaryPageMapper diaryPageMapper;
 
     public DiaryPageController(DiaryPageService diaryPageService,
-                               DiaryPageRepository diaryPageRepository,
                                DiaryPageMapper diaryPageMapper) {
         this.diaryPageService = diaryPageService;
-        this.diaryPageRepository = diaryPageRepository;
         this.diaryPageMapper = diaryPageMapper;
     }
 
     @GetMapping("/getDiaryPage")
     public DiaryPageDTO getDiaryPage(@PathVariable("id") Long id) {
+
         return diaryPageService.getDiaryPageDTO(id);
+    }
+
+    @GetMapping("/getAllDiaryPages")
+    public List<DiaryPageDTO> getAllDiaryPages() {
+        return diaryPageService.findAllDiaryPageDTO();
     }
 
     @PostMapping("/createDiaryPage")
@@ -43,40 +39,8 @@ public class DiaryPageController {
         diaryPageService.createDiaryPageDTO(diaryPageDTO);
     }
 
-    @GetMapping("/diaryPages")
-    public List<DiaryPageDTO> findAllDiaryPages() {
-        return diaryPageRepository.findAll()
-                .stream()
-                .map(e -> diaryPageMapper.from(e))
-                .toList();
+    @DeleteMapping("/deleteDiaryPages")
+    public void deleteDiaryPage(@PathVariable long diaryPageId) {
+        diaryPageService.deleteDiaryPage(diaryPageId);
     }
-
-//    @GetMapping("/diaryPages/{diaryPageId}")
-//    public DiaryPageDTO getDiaryPage(@PathVariable long diaryPageId) {
-//        DiaryPageEntity diaryPage = diaryPageRepository.findById(diaryPageId)
-//                .orElseThrow(() -> new RuntimeException("DiaryPage id not found - " + diaryPageId));
-//        return diaryPageMapper.from(diaryPage);
-//    }
-
-//    @PostMapping("/diaryPages")
-//    public DiaryPageDTO addDiaryPage(@RequestBody DiaryPageDTO diaryPage) {
-//
-//        DiaryPageEntity newDiaryPage = diaryPageRepository.save(diaryPage);
-//        return diaryPageMapper.from(newDiaryPage);
-//    }
-//
-//    @PutMapping("/diaryPages")
-//    public DiaryPageDTO updateDiaryPage(@RequestBody DiaryPageDTO diaryPage) {
-//        DiaryPageEntity updatedDiaryPage = diaryPageRepository.save(diaryPage);
-//        return diaryPageMapper.from(updatedDiaryPage);
-//    }
-
-
-//    @DeleteMapping("/diaryPages/{diaryPageId}")
-//    public String deleteDiaryPage(@PathVariable long diaryPageId) {
-//        DiaryPageEntity diaryPage = diaryPageRepository.findById(diaryPageId)
-//                .orElseThrow(() -> new RuntimeException("DiaryPage id not found - " + diaryPageId));
-//        diaryPageRepository.delete(diaryPage);
-//        return "Deleted diaryPage with id: " + diaryPageId;
-//    }
 }

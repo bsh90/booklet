@@ -39,7 +39,8 @@ public class LessonPageService {
     LessonSolutionMapper lessonSolutionMapper;
 
     public LessonDTO getLessonDTO(Long id) {
-        LessonEntity lessonEntity = lessonRepository.getReferenceById(id);
+        LessonEntity lessonEntity = lessonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Lesson id not found - " + id));
         return lessonMapper.from(lessonEntity);
     }
 

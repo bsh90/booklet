@@ -21,14 +21,14 @@ public class LessonPageController {
     @Autowired
     LessonPageService lessonPageService;
 
-    @PostMapping("/postNewLesson")
-    public void postNewLesson(@RequestBody LessonPostDTO lessonPostDTO) {
-        publishingService.postANewLesson(lessonPostDTO);
-    }
-
     @GetMapping("/getLessonPageById")
     public LessonDTO getLessonPageById(@PathVariable("id") Long id) {
 
         return lessonPageService.getLessonDTO(id);
+    }
+
+    @PostMapping("/postNewLesson")
+    public void postNewLesson(@RequestBody LessonPostDTO lessonPostDTO) {
+        publishingService.postANewLesson(lessonPostDTO);
     }
 }
