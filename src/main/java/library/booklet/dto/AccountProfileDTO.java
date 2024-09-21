@@ -4,12 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountProfileDTO {
 
-    String name;
+    private Long id;
 
-    String info;
+    private LocalDate createdAt;
+
+    private LocalDate updatedAt;
+
+    private String name;
+
+    private String info;
 }

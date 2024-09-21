@@ -8,6 +8,8 @@ import library.booklet.repository.LessonSolutionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -28,13 +30,16 @@ class PublishingServiceTest {
 
     @Test
     void postANewLesson() {
+        Long id = 1L;
+        LocalDate createdAt = LocalDate.now();
+        LocalDate updatedAt = null;
         String lesson = "lesson";
         String question = "question";
         String answerOption = "answerOption";
         String answerOptionSolution = "answerOptionSolution";
         String solutionDescription = "solutionDescription";
 
-        LessonPostDTO lessonPostDTO = new LessonPostDTO(lesson, question, answerOption,
+        LessonPostDTO lessonPostDTO = new LessonPostDTO(id, createdAt, updatedAt, lesson, question, answerOption,
                 answerOptionSolution, solutionDescription);
         LessonEntity lessonEntity = new LessonEntity(lesson, question, answerOption);
         LessonSolutionEntity lessonSolutionEntity = new LessonSolutionEntity(answerOptionSolution,

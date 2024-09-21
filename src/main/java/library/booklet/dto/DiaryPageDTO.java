@@ -10,6 +10,14 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DiaryPageDTO {
+
+    private Long id;
+
+    private LocalDate createdAt;
+
+    private LocalDate updatedAt;
+
     private LocalDate writtenDate;
+
     private String entry;
 }
