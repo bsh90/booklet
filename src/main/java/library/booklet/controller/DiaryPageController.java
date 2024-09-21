@@ -24,7 +24,7 @@ public class DiaryPageController {
     }
 
     @GetMapping("/getDiaryPage")
-    public DiaryPageDTO getDiaryPage(@PathVariable("id") Long id) {
+    public DiaryPageDTO getDiaryPage(@RequestParam("id") Long id) {
 
         return diaryPageService.getDiaryPageDTO(id);
     }
@@ -40,7 +40,7 @@ public class DiaryPageController {
     }
 
     @DeleteMapping("/deleteDiaryPages")
-    public void deleteDiaryPage(@PathVariable long diaryPageId) {
+    public void deleteDiaryPage(@RequestParam("id") long diaryPageId) {
         diaryPageService.deleteDiaryPage(diaryPageId);
     }
 }

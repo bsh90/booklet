@@ -25,11 +25,11 @@ public class PublishingService {
         LessonEntity lessonEntity = new LessonEntity(lessonPostDTO.getLesson(),
                                                     lessonPostDTO.getQuestion(),
                                                     lessonPostDTO.getAnswerOption());
-        lessonEntity = lessonRepository.save(lessonEntity);
+        lessonEntity = lessonRepository.saveAndFlush(lessonEntity);
 
         LessonSolutionEntity lessonSolutionEntity = new LessonSolutionEntity(lessonPostDTO.getAnswerOptionSolution(),
                                                                             lessonPostDTO.getSolutionDescription(),
                                                                             lessonEntity.getId());
-        return lessonSolutionRepository.save(lessonSolutionEntity);
+        return lessonSolutionRepository.saveAndFlush(lessonSolutionEntity);
     }
 }

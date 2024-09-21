@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +57,7 @@ class LessonPageServiceTest {
     }
 
     void stub_getLessonDTO(Long id, LessonEntity lessonEntity, LessonDTO lessonDTO) {
-        when(lessonRepository.getReferenceById(id)).thenReturn(lessonEntity);
+        when(lessonRepository.findById(id)).thenReturn(Optional.ofNullable(lessonEntity));
         when(lessonMapper.from(lessonEntity)).thenReturn(lessonDTO);
     }
 

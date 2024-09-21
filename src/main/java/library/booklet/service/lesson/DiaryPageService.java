@@ -41,7 +41,7 @@ public class DiaryPageService {
     }
 
     public DiaryPageEntity createDiaryPageDTO(DiaryPageDTO diaryPageDTO) {
-        return diaryPageRepository.save(diaryPageMapper.to(diaryPageDTO));
+        return diaryPageRepository.saveAndFlush(diaryPageMapper.to(diaryPageDTO));
     }
 
     public void deleteDiaryPage(Long id) {

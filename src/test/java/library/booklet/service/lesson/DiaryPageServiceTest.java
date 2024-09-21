@@ -7,6 +7,8 @@ import library.booklet.repository.DiaryPageRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -39,7 +41,7 @@ class DiaryPageServiceTest {
     private void stub_getDiaryPageDTO(Long sampleId,
                                       DiaryPageEntity returnDiaryPageEntity,
                                       DiaryPageDTO diaryPageDTO) {
-        when(diaryPageRepository.getReferenceById(eq(sampleId))).thenReturn(returnDiaryPageEntity);
+        when(diaryPageRepository.findById(eq(sampleId))).thenReturn(Optional.ofNullable(returnDiaryPageEntity));
         when(diaryPageMapper.from(eq(returnDiaryPageEntity))).thenReturn(diaryPageDTO);
     }
 
