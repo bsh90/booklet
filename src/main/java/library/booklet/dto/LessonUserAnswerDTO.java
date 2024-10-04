@@ -3,22 +3,15 @@ package library.booklet.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LessonAnswerDTO {
+public class LessonUserAnswerDTO {
 
-    private Long id;
-
-    private LocalDate createdAt;
-
-    private LocalDate updatedAt;
+    private Long questionId;
 
     private String answerOption;
 
     private String answerCommentary;
-
-    private Long lessonPageEntityId;
 }

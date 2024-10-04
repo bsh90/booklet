@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LessonSolutionDTO {
+public class QuestionSolutionDTO {
 
     private Long id;
 
@@ -16,9 +16,11 @@ public class LessonSolutionDTO {
 
     private LocalDate updatedAt;
 
+    private String question;
+
     private String option;
 
     private String description;
 
-    private Long lessonPageEntityId;
+    private LessonDTO lesson;
 }

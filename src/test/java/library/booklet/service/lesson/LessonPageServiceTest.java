@@ -1,16 +1,16 @@
 package library.booklet.service.lesson;
 
-import library.booklet.dto.LessonAnswerDTO;
+import library.booklet.dto.QuestionSolutionDTO;
+import library.booklet.dto.LessonUserAnswerDTO;
 import library.booklet.dto.LessonDTO;
-import library.booklet.dto.LessonSolutionDTO;
 import library.booklet.entity.DiaryPageEntity;
 import library.booklet.entity.LessonEntity;
-import library.booklet.entity.LessonSolutionEntity;
+import library.booklet.entity.QuestionSolutionEntity;
 import library.booklet.mapper.LessonMapper;
-import library.booklet.mapper.LessonSolutionMapper;
+import library.booklet.mapper.QuestionSolutionMapper;
 import library.booklet.repository.DiaryPageRepository;
 import library.booklet.repository.LessonRepository;
-import library.booklet.repository.LessonSolutionRepository;
+import library.booklet.repository.QuestionSolutionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,20 +26,20 @@ class LessonPageServiceTest {
 
     LessonPageService lessonPageService;
     LessonRepository lessonRepository;
-    LessonSolutionRepository lessonSolutionRepository;
+    QuestionSolutionRepository questionSolutionRepository;
     DiaryPageRepository diaryPageRepository;
     LessonMapper lessonMapper;
-    LessonSolutionMapper lessonSolutionMapper;
+    QuestionSolutionMapper lessonSolutionMapper;
 
     @BeforeEach
     void setUp() {
         lessonRepository = mock(LessonRepository.class);
-        lessonSolutionRepository = mock(LessonSolutionRepository.class);
+        questionSolutionRepository = mock(QuestionSolutionRepository.class);
         diaryPageRepository = mock(DiaryPageRepository.class);
         lessonMapper = mock(LessonMapper.class);
-        lessonSolutionMapper = mock(LessonSolutionMapper.class);
+        lessonSolutionMapper = mock(QuestionSolutionMapper.class);
         lessonPageService = new LessonPageService(lessonRepository,
-                lessonSolutionRepository,
+                questionSolutionRepository,
                 diaryPageRepository,
                 lessonMapper,
                 lessonSolutionMapper);
@@ -64,17 +64,17 @@ class LessonPageServiceTest {
     @Test
     void getLessonSolutionDTO() {
         Long sampleId = 1L;
-        LessonSolutionEntity lessonSolutionEntity = new LessonSolutionEntity();
-        LessonSolutionDTO lessonSolutionDTO = new LessonSolutionDTO();
-        stub_getLessonSolutionDTO(sampleId, lessonSolutionEntity, lessonSolutionDTO);
+        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity();
+        QuestionSolutionDTO questionSolutionDTO = new QuestionSolutionDTO();
+        stub_getLessonSolutionDTO(sampleId, questionSolutionEntity, questionSolutionDTO);
 
-        LessonSolutionDTO result = lessonPageService.getLessonSolutionDTO(sampleId);
-        assertThat(result).isEqualTo(lessonSolutionDTO);
+        QuestionSolutionDTO result = lessonPageService.getLessonSolutionDTO(sampleId);
+        assertThat(result).isEqualTo(questionSolutionDTO);
     }
 
-    void stub_getLessonSolutionDTO(Long id, LessonSolutionEntity lessonSolutionEntity, LessonSolutionDTO lessonSolutionDTO) {
-        when(lessonSolutionRepository.findByLessonPageEntityId(id)).thenReturn(lessonSolutionEntity);
-        when(lessonSolutionMapper.from(lessonSolutionEntity)).thenReturn(lessonSolutionDTO);
+    void stub_getLessonSolutionDTO(Long id, QuestionSolutionEntity questionSolutionEntity, QuestionSolutionDTO questionSolutionDTO) {
+        when(questionSolutionRepository.findById(id)).thenReturn(Optional.ofNullable(questionSolutionEntity));
+        when(lessonSolutionMapper.from(questionSolutionEntity)).thenReturn(questionSolutionDTO);
     }
 
     @Test
@@ -84,14 +84,14 @@ class LessonPageServiceTest {
 
     @Test
     void postAnswerCommentary() {
-        LessonAnswerDTO inputLessonAnswerDTO = new LessonAnswerDTO();
+        LessonUserAnswerDTO inputLessonUserAnswerDTO = new LessonUserAnswerDTO();
         String commentary = "commentary";
-        inputLessonAnswerDTO.setAnswerCommentary(commentary);
+        inputLessonUserAnswerDTO.setAnswerCommentary(commentary);
 
         DiaryPageEntity diaryPageEntity = new DiaryPageEntity(LocalDate.of(2024, 9, 9), commentary);
         when(diaryPageRepository.saveAndFlush(any())).thenReturn(diaryPageEntity);
 
-        DiaryPageEntity result = lessonPageService.postAnswerCommentary(inputLessonAnswerDTO);
+        DiaryPageEntity result = lessonPageService.postAnswerCommentary(inputLessonUserAnswerDTO);
         assertThat(result).isEqualTo(diaryPageEntity);
     }
 }

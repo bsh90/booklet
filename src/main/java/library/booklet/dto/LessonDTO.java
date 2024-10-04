@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -16,9 +17,7 @@ public class LessonDTO {
 
     private LocalDate updatedAt;
 
-    private String lesson;
+    private String entry;
 
-    private String question;
-
-    private String options;
+    private Set<QuestionSolutionDTO> questions;
 }
