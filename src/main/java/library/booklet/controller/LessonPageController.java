@@ -1,7 +1,6 @@
 package library.booklet.controller;
 
-import library.booklet.dto.LessonDTO;
-import library.booklet.dto.LessonPostDTO;
+import library.booklet.dto.*;
 import library.booklet.service.lesson.LessonPageService;
 import library.booklet.service.lesson.PublishingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,18 @@ public class LessonPageController {
     }
 
     @PostMapping("/postNewLesson")
-    public void postNewLesson(@RequestBody LessonPostDTO lessonPostDTO) {
-        publishingService.postANewLesson(lessonPostDTO);
+    public QuestionSolutionDTO postNewLesson(@RequestBody LessonPostDTO lessonPostDTO) {
+        return publishingService.postNewLesson(lessonPostDTO);
+    }
+
+    @PostMapping("/postNewQuestion")
+    public QuestionSolutionDTO postNewQuestion(@RequestBody QuestionPostDTO questionPostDTO) {
+        return publishingService.postNewQuestion(questionPostDTO);
+    }
+
+    @PostMapping("/postNewAnswer")
+    public DiaryPageDTO postNewAnswer(@RequestBody LessonUserAnswerDTO userAnswerDTO) {
+        boolean result = lessonPageService.evaluateAnswer(userAnswerDTO);
+        return lessonPageService.postAnswerCommentary(result, userAnswerDTO);
     }
 }

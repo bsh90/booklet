@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -17,7 +19,9 @@ public class QuestionSolutionEntity extends BaseEntity {
 
     private String question;
 
-    private String option;
+    private List<String> options;
+
+    private String optionSolution;
 
     private String description;
 

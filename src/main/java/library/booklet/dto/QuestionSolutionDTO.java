@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +19,9 @@ public class QuestionSolutionDTO {
 
     private String question;
 
-    private String option;
+    private List<String> options;
+
+    private String optionSolution;
 
     private String description;
 

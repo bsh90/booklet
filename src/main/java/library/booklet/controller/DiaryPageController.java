@@ -24,10 +24,7 @@ public class DiaryPageController {
     }
 
     @GetMapping("/getDiaryPage")
-    public DiaryPageDTO getDiaryPage(@RequestParam("id") Long id) {
-
-        return diaryPageService.getDiaryPageDTO(id);
-    }
+    public DiaryPageDTO getDiaryPage(@RequestParam("id") Long id) { return diaryPageService.getDiaryPageDTO(id); }
 
     @GetMapping("/getAllDiaryPages")
     public List<DiaryPageDTO> getAllDiaryPages() {

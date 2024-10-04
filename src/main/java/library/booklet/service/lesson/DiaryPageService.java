@@ -58,7 +58,7 @@ public class DiaryPageService {
         return diaryPageRepository.findAll(firstPage);
     }
 
-    public List<DiaryPageEntity> sortDiaryPageBasedOnWrittenDat() {
+    public List<DiaryPageEntity> sortDiaryPageBasedOnWrittenDate() {
         return diaryPageRepository.findAll(Sort.by("writtenDate"));
     }
 }

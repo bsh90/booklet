@@ -1,5 +1,6 @@
 package library.booklet.service.lesson;
 
+import library.booklet.dto.DiaryPageDTO;
 import library.booklet.dto.QuestionSolutionDTO;
 import library.booklet.dto.LessonUserAnswerDTO;
 import library.booklet.dto.LessonDTO;
@@ -7,6 +8,7 @@ import library.booklet.entity.DiaryPageEntity;
 import library.booklet.entity.LessonEntity;
 import library.booklet.entity.QuestionSolutionEntity;
 import library.booklet.exception.EntityNotFoundException;
+import library.booklet.mapper.DiaryPageMapper;
 import library.booklet.mapper.LessonMapper;
 import library.booklet.mapper.QuestionSolutionMapper;
 import library.booklet.repository.DiaryPageRepository;
@@ -39,6 +41,9 @@ public class LessonPageService {
     @Autowired
     QuestionSolutionMapper lessonSolutionMapper;
 
+    @Autowired
+    DiaryPageMapper diaryPageMapper;
+
     public LessonDTO getLessonDTO(Long id) {
         LessonEntity lessonEntity = lessonRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lesson id not found - " + id));
@@ -56,12 +61,14 @@ public class LessonPageService {
                 .findById(lessonAnswerDTO.getQuestionId())
                 .orElseThrow(()->new EntityNotFoundException("Question entity not found"));
 
-        return lessonAnswerDTO.getAnswerOption().equals(questionSolutionEntity.getOption());
+        return lessonAnswerDTO.getAnswerOption().equals(questionSolutionEntity.getOptionSolution());
     }
 
-    public DiaryPageEntity postAnswerCommentary(LessonUserAnswerDTO lessonAnswerDTO) {
+    public DiaryPageDTO postAnswerCommentary(boolean answerResult, LessonUserAnswerDTO lessonAnswerDTO) {
         LocalDate now = LocalDate.now();
-        DiaryPageEntity diaryPageEntity = new DiaryPageEntity(now, lessonAnswerDTO.getAnswerCommentary());
-        return diaryPageRepository.saveAndFlush(diaryPageEntity);
+        DiaryPageEntity diaryPageEntity = new DiaryPageEntity(now, "The answer is " + answerResult + ". Comments: " +
+                lessonAnswerDTO.getAnswerCommentary());
+        diaryPageEntity = diaryPageRepository.saveAndFlush(diaryPageEntity);
+        return diaryPageMapper.from(diaryPageEntity);
     }
 }

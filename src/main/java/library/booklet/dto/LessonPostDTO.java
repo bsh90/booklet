@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,11 +13,11 @@ public class LessonPostDTO {
 
     private String lesson;
 
-    private String question;
+    private String initialQuestion;
 
-    private String answerOption;
+    private List<String> answerOptionOfInitialQuestion;
 
-    private String answerOptionSolution;
+    private String answerOptionSolutionOfInitialQuestion;
 
-    private String solutionDescription;
+    private String solutionDescriptionOfInitialQuestion;
 }

@@ -1,11 +1,13 @@
 package library.booklet.service.lesson;
 
+import library.booklet.dto.DiaryPageDTO;
 import library.booklet.dto.QuestionSolutionDTO;
 import library.booklet.dto.LessonUserAnswerDTO;
 import library.booklet.dto.LessonDTO;
 import library.booklet.entity.DiaryPageEntity;
 import library.booklet.entity.LessonEntity;
 import library.booklet.entity.QuestionSolutionEntity;
+import library.booklet.mapper.DiaryPageMapper;
 import library.booklet.mapper.LessonMapper;
 import library.booklet.mapper.QuestionSolutionMapper;
 import library.booklet.repository.DiaryPageRepository;
@@ -30,6 +32,7 @@ class LessonPageServiceTest {
     DiaryPageRepository diaryPageRepository;
     LessonMapper lessonMapper;
     QuestionSolutionMapper lessonSolutionMapper;
+    DiaryPageMapper diaryPageMapper;
 
     @BeforeEach
     void setUp() {
@@ -38,11 +41,13 @@ class LessonPageServiceTest {
         diaryPageRepository = mock(DiaryPageRepository.class);
         lessonMapper = mock(LessonMapper.class);
         lessonSolutionMapper = mock(QuestionSolutionMapper.class);
+        diaryPageMapper = mock(DiaryPageMapper.class);
         lessonPageService = new LessonPageService(lessonRepository,
                 questionSolutionRepository,
                 diaryPageRepository,
                 lessonMapper,
-                lessonSolutionMapper);
+                lessonSolutionMapper,
+                diaryPageMapper);
     }
 
     @Test
@@ -84,14 +89,22 @@ class LessonPageServiceTest {
 
     @Test
     void postAnswerCommentary() {
+        boolean answerResult = false;
         LessonUserAnswerDTO inputLessonUserAnswerDTO = new LessonUserAnswerDTO();
         String commentary = "commentary";
         inputLessonUserAnswerDTO.setAnswerCommentary(commentary);
 
-        DiaryPageEntity diaryPageEntity = new DiaryPageEntity(LocalDate.of(2024, 9, 9), commentary);
+        DiaryPageEntity diaryPageEntity = new DiaryPageEntity(LocalDate.of(2024, 9, 9),
+                "The answer is " + answerResult + ". Comments: " + commentary);
         when(diaryPageRepository.saveAndFlush(any())).thenReturn(diaryPageEntity);
+        DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getId(),
+                diaryPageEntity.getCreatedAt(),
+                diaryPageEntity.getUpdatedAt(),
+                diaryPageEntity.getWrittenDate(),
+                diaryPageEntity.getEntry());
+        when(diaryPageMapper.from(diaryPageEntity)).thenReturn(diaryPageDTO);
 
-        DiaryPageEntity result = lessonPageService.postAnswerCommentary(inputLessonUserAnswerDTO);
-        assertThat(result).isEqualTo(diaryPageEntity);
+        DiaryPageDTO result = lessonPageService.postAnswerCommentary(answerResult, inputLessonUserAnswerDTO);
+        assertThat(result).isEqualTo(diaryPageDTO);
     }
 }
