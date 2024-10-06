@@ -1,9 +1,11 @@
 package library.booklet.service.lesson;
 
 import library.booklet.dto.DiaryPageDTO;
-import library.booklet.dto.QuestionSolutionDTO;
-import library.booklet.dto.LessonUserAnswerDTO;
 import library.booklet.dto.LessonDTO;
+import library.booklet.dto.LessonPostDTO;
+import library.booklet.dto.LessonUserAnswerDTO;
+import library.booklet.dto.QuestionPostDTO;
+import library.booklet.dto.QuestionSolutionDTO;
 import library.booklet.entity.DiaryPageEntity;
 import library.booklet.entity.LessonEntity;
 import library.booklet.entity.QuestionSolutionEntity;
@@ -17,10 +19,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.*;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +37,7 @@ class LessonPageServiceTest {
     LessonMapper lessonMapper;
     QuestionSolutionMapper lessonSolutionMapper;
     DiaryPageMapper diaryPageMapper;
+    QuestionSolutionMapper questionSolutionMapper;
 
     @BeforeEach
     void setUp() {
@@ -42,12 +47,14 @@ class LessonPageServiceTest {
         lessonMapper = mock(LessonMapper.class);
         lessonSolutionMapper = mock(QuestionSolutionMapper.class);
         diaryPageMapper = mock(DiaryPageMapper.class);
+        questionSolutionMapper = mock(QuestionSolutionMapper.class);
         lessonPageService = new LessonPageService(lessonRepository,
                 questionSolutionRepository,
                 diaryPageRepository,
                 lessonMapper,
                 lessonSolutionMapper,
-                diaryPageMapper);
+                diaryPageMapper,
+                questionSolutionMapper);
     }
 
     @Test
@@ -80,6 +87,101 @@ class LessonPageServiceTest {
     void stub_getLessonSolutionDTO(Long id, QuestionSolutionEntity questionSolutionEntity, QuestionSolutionDTO questionSolutionDTO) {
         when(questionSolutionRepository.findById(id)).thenReturn(Optional.ofNullable(questionSolutionEntity));
         when(lessonSolutionMapper.from(questionSolutionEntity)).thenReturn(questionSolutionDTO);
+    }
+
+    @Test
+    void postNewLesson() {
+        QuestionSolutionEntity questionEntity = new QuestionSolutionEntity();
+        LocalDate createdAt = LocalDate.now();
+        LocalDate updatedAt = null;
+        String lesson = "lesson";
+        String question = "question";
+        String answerOptionSolution = "answerOptionSolution";
+        List<String> answerOptions = asList(answerOptionSolution, "option2", "option3");
+        String solutionDescription = "solutionDescription";
+
+        LessonPostDTO lessonPostDTO = new LessonPostDTO(lesson, question, answerOptions, answerOptionSolution,
+                solutionDescription);
+        LessonEntity lessonEntity = new LessonEntity(lesson, Collections.emptySet());
+        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity(question, answerOptions,
+                answerOptionSolution, solutionDescription, lessonEntity);
+        Set<QuestionSolutionEntity> questionSet = new HashSet<>();
+        questionSet.add(questionSolutionEntity);
+        lessonEntity.setQuestions(questionSet);
+        LessonDTO lessonDTO = new LessonDTO(lessonEntity.getId(),
+                lessonEntity.getCreatedAt(),
+                lessonEntity.getCreatedAt(),
+                lessonEntity.getEntry(),
+                Collections.emptySet());
+        QuestionSolutionDTO questionSolutionDTO = new QuestionSolutionDTO(questionSolutionEntity.getId(),
+                questionSolutionEntity.getCreatedAt(),
+                questionSolutionEntity.getUpdatedAt(),
+                questionSolutionEntity.getQuestion(),
+                questionSolutionEntity.getOptions(),
+                questionSolutionEntity.getOptionSolution(),
+                questionSolutionEntity.getDescription(),
+                lessonDTO);
+        Set<QuestionSolutionDTO> questionSolutionDTOs = new HashSet<>();
+        questionSolutionDTOs.add(questionSolutionDTO);
+        lessonDTO.setQuestions(questionSolutionDTOs);
+
+        stub_postNewLesson(lessonEntity, questionSolutionEntity, questionSolutionDTO, lessonDTO);
+
+        LessonDTO result = lessonPageService.postNewLesson(lessonPostDTO);
+        assertThat(result).isEqualTo(lessonDTO);
+        // test of find in database here as well
+    }
+
+    void stub_postNewLesson(LessonEntity lessonEntity, QuestionSolutionEntity questionSolutionEntity,
+                            QuestionSolutionDTO questionSolutionDTO, LessonDTO lessonDTO) {
+        when(lessonRepository.saveAndFlush(any())).thenReturn(lessonEntity);
+        when(questionSolutionRepository.saveAndFlush(any())).thenReturn(questionSolutionEntity);
+        when(questionSolutionMapper.from(eq(questionSolutionEntity))).thenReturn(questionSolutionDTO);
+        when(lessonMapper.from(eq(lessonEntity))).thenReturn(lessonDTO);
+    }
+
+    @Test
+    void updateLesson() {
+        LessonEntity lessonEntity = new LessonEntity();
+        LessonDTO lessonDTO = new LessonDTO();
+        LessonEntity updateLessonEntity = new LessonEntity();
+        LessonDTO updateLessonDTO = new LessonDTO();
+        sub_updateLesson(lessonEntity, lessonDTO, updateLessonEntity, updateLessonDTO);
+
+        LessonDTO result = lessonPageService.updateLesson(lessonDTO);
+        assertThat(result).isEqualTo(updateLessonDTO);
+    }
+
+    void sub_updateLesson(LessonEntity lessonEntity, LessonDTO lessonDTO, LessonEntity updateLessonEntity,
+                          LessonDTO updateLessonDTO) {
+        when(lessonRepository.findById(any())).thenReturn(Optional.ofNullable(lessonEntity));
+        when(lessonMapper.to(eq(lessonDTO))).thenReturn(updateLessonEntity);
+        when(lessonRepository.saveAndFlush(any())).thenReturn(updateLessonEntity);
+        when(lessonMapper.from(eq(updateLessonEntity))).thenReturn(updateLessonDTO);
+    }
+
+    @Test
+    void postNewQuestion() {
+        Long id = 1L;
+        String question = "question";
+        String answerOptionSolution = "answerOptionSolution";
+        List<String> answerOptions = asList(answerOptionSolution, "option2", "option3");
+        String solutionDescription = "solutionDescription";
+        String entry = "entry";
+
+        QuestionPostDTO questionPostDTO = new QuestionPostDTO(id, question,
+                answerOptions, answerOptionSolution, solutionDescription);
+        LessonEntity lessonEntity = new LessonEntity(entry, Collections.emptySet());
+        QuestionSolutionDTO questionSolutionDTO = new QuestionSolutionDTO();
+        stub_postNewQuestion(id, lessonEntity, questionSolutionDTO);
+
+        QuestionSolutionDTO result = lessonPageService.postNewQuestion(questionPostDTO);
+        assertThat(result).isEqualTo(questionSolutionDTO);
+    }
+
+    void stub_postNewQuestion(Long lessonId, LessonEntity lessonEntity, QuestionSolutionDTO questionSolutionDTO) {
+        when(lessonRepository.findById(eq(lessonId))).thenReturn(Optional.ofNullable(lessonEntity));
+        when(questionSolutionMapper.from(any())).thenReturn(questionSolutionDTO);
     }
 
     @Test
