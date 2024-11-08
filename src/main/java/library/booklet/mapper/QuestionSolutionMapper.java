@@ -9,9 +9,8 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface QuestionSolutionMapper {
 
-    @Mapping(source="lesson", target="lesson")
+    @Mapping(target="lesson", ignore = true)
     QuestionSolutionEntity to(QuestionSolutionDTO lessonDTO);
 
-    @Mapping(source="lesson", target="lesson")
     QuestionSolutionDTO from(QuestionSolutionEntity lessonEntity);
 }

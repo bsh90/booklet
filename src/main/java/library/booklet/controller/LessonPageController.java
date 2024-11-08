@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 @RestController
 public class LessonPageController {
@@ -58,5 +60,15 @@ public class LessonPageController {
     public DiaryPageDTO postNewAnswer(@RequestBody LessonUserAnswerDTO userAnswerDTO) {
         boolean result = lessonPageService.evaluateAnswer(userAnswerDTO);
         return lessonPageService.postAnswerCommentary(result, userAnswerDTO);
+    }
+
+    @DeleteMapping("/deleteAllLessons")
+    public void deleteAllLessons() {
+        lessonPageService.deleteAllLessons();
+    }
+
+    @GetMapping("/getAllLessons")
+    public List<LessonDTO> getAllLessons() {
+        return lessonPageService.getAllLessons();
     }
 }

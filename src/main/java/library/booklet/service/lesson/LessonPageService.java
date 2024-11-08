@@ -22,10 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -66,17 +67,18 @@ public class LessonPageService {
     }
 
     public LessonDTO postNewLesson(LessonPostDTO lessonPostDTO) {
-        LessonEntity lessonEntity = new LessonEntity(lessonPostDTO.getLesson(), Collections.EMPTY_SET);
-        lessonEntity = lessonRepository.saveAndFlush(lessonEntity);
+        LessonEntity lessonEntity = new LessonEntity();
+        lessonEntity.setEntry(lessonPostDTO.getLesson());
 
-        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity(lessonPostDTO.getInitialQuestion(),
-                lessonPostDTO.getAnswerOptionOfInitialQuestion(),
-                lessonPostDTO.getAnswerOptionSolutionOfInitialQuestion(),
-                lessonPostDTO.getSolutionDescriptionOfInitialQuestion(),
-                lessonEntity);
-        questionSolutionRepository.saveAndFlush(questionSolutionEntity);
+        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity();
+        questionSolutionEntity.setQuestion(lessonPostDTO.getInitialQuestion());
+        questionSolutionEntity.setOptions(lessonPostDTO.getAnswerOptionOfInitialQuestion());
+        questionSolutionEntity.setOptionSolution(lessonPostDTO.getAnswerOptionSolutionOfInitialQuestion());
+        questionSolutionEntity.setDescription(lessonPostDTO.getSolutionDescriptionOfInitialQuestion());
+        questionSolutionEntity.setLesson(lessonEntity);
 
         Set<QuestionSolutionEntity> questionSet = new HashSet<>();
+        questionSet.add(questionSolutionEntity);
         lessonEntity.setQuestions(questionSet);
         lessonEntity = lessonRepository.saveAndFlush(lessonEntity);
 
@@ -95,7 +97,6 @@ public class LessonPageService {
         Optional<LessonEntity> lessonEntityOptional = lessonRepository.findById(lessonDTO.getId());
         if (lessonEntityOptional.isPresent()) {
             LessonEntity lessonEntity = lessonMapper.to(lessonDTO);
-            lessonEntity.setUpdatedAt(LocalDate.now());
             LessonEntity updatedLessonEntity = lessonRepository.saveAndFlush(lessonEntity);
 
             return lessonMapper.from(updatedLessonEntity);
@@ -107,11 +108,13 @@ public class LessonPageService {
     public QuestionSolutionDTO postNewQuestion(QuestionPostDTO questionPostDTO) {
         LessonEntity lessonEntity = lessonRepository.findById(questionPostDTO.getLessonId())
                 .orElseThrow(() -> new EntityNotFoundException("Lesson not found"));
-        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity(questionPostDTO.getQuestion(),
-                questionPostDTO.getAnswerOption(),
-                questionPostDTO.getAnswerOptionSolution(),
-                questionPostDTO.getSolutionDescription(),
-                lessonEntity);
+        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity();
+        questionSolutionEntity.setQuestion(questionPostDTO.getQuestion());
+        questionSolutionEntity.setOptions(questionPostDTO.getAnswerOption());
+        questionSolutionEntity.setOptionSolution(questionPostDTO.getAnswerOptionSolution());
+        questionSolutionEntity.setDescription(questionPostDTO.getSolutionDescription());
+        questionSolutionEntity.setLesson(lessonEntity);
+        questionSolutionEntity = questionSolutionRepository.saveAndFlush(questionSolutionEntity);
         return questionSolutionMapper.from(questionSolutionEntity);
     }
 
@@ -125,9 +128,22 @@ public class LessonPageService {
 
     public DiaryPageDTO postAnswerCommentary(boolean answerResult, LessonUserAnswerDTO lessonAnswerDTO) {
         LocalDate now = LocalDate.now();
-        DiaryPageEntity diaryPageEntity = new DiaryPageEntity(now, "The answer is " + answerResult + ". Comments: " +
-                lessonAnswerDTO.getAnswerCommentary());
+        DiaryPageEntity diaryPageEntity = new DiaryPageEntity();
+        diaryPageEntity.setWrittenDate(now);
+        diaryPageEntity.setEntry("The answer is " + answerResult + ". Your Comments: " +
+                lessonAnswerDTO.getAnswerDiaryEntry());
         diaryPageEntity = diaryPageRepository.saveAndFlush(diaryPageEntity);
         return diaryPageMapper.from(diaryPageEntity);
+    }
+
+    public List<LessonDTO> getAllLessons() {
+        List<LessonEntity> allLessonEntities = lessonRepository.findAll();
+        return allLessonEntities.stream()
+                .map(entity -> lessonMapper.from(entity))
+                .collect(Collectors.toList());
+    }
+
+    public void deleteAllLessons() {
+        lessonRepository.deleteAll();
     }
 }

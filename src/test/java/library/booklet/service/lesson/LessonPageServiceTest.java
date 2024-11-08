@@ -91,9 +91,6 @@ class LessonPageServiceTest {
 
     @Test
     void postNewLesson() {
-        QuestionSolutionEntity questionEntity = new QuestionSolutionEntity();
-        LocalDate createdAt = LocalDate.now();
-        LocalDate updatedAt = null;
         String lesson = "lesson";
         String question = "question";
         String answerOptionSolution = "answerOptionSolution";
@@ -102,25 +99,27 @@ class LessonPageServiceTest {
 
         LessonPostDTO lessonPostDTO = new LessonPostDTO(lesson, question, answerOptions, answerOptionSolution,
                 solutionDescription);
-        LessonEntity lessonEntity = new LessonEntity(lesson, Collections.emptySet());
-        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity(question, answerOptions,
-                answerOptionSolution, solutionDescription, lessonEntity);
+        LessonEntity lessonEntity = new LessonEntity();
+        lessonEntity.setEntry(lesson);
+        lessonEntity.setQuestions(Collections.emptySet());
+        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity();
+        questionSolutionEntity.setQuestion(question);
+        questionSolutionEntity.setOptions(answerOptions);
+        questionSolutionEntity.setOptionSolution(answerOptionSolution);
+        questionSolutionEntity.setDescription(solutionDescription);
+        questionSolutionEntity.setLesson(lessonEntity);
+
         Set<QuestionSolutionEntity> questionSet = new HashSet<>();
         questionSet.add(questionSolutionEntity);
         lessonEntity.setQuestions(questionSet);
         LessonDTO lessonDTO = new LessonDTO(lessonEntity.getId(),
-                lessonEntity.getCreatedAt(),
-                lessonEntity.getCreatedAt(),
                 lessonEntity.getEntry(),
                 Collections.emptySet());
         QuestionSolutionDTO questionSolutionDTO = new QuestionSolutionDTO(questionSolutionEntity.getId(),
-                questionSolutionEntity.getCreatedAt(),
-                questionSolutionEntity.getUpdatedAt(),
                 questionSolutionEntity.getQuestion(),
                 questionSolutionEntity.getOptions(),
                 questionSolutionEntity.getOptionSolution(),
-                questionSolutionEntity.getDescription(),
-                lessonDTO);
+                questionSolutionEntity.getDescription());
         Set<QuestionSolutionDTO> questionSolutionDTOs = new HashSet<>();
         questionSolutionDTOs.add(questionSolutionDTO);
         lessonDTO.setQuestions(questionSolutionDTOs);
@@ -171,7 +170,9 @@ class LessonPageServiceTest {
 
         QuestionPostDTO questionPostDTO = new QuestionPostDTO(id, question,
                 answerOptions, answerOptionSolution, solutionDescription);
-        LessonEntity lessonEntity = new LessonEntity(entry, Collections.emptySet());
+        LessonEntity lessonEntity = new LessonEntity();
+        lessonEntity.setEntry(entry);
+        lessonEntity.setQuestions(Collections.emptySet());
         QuestionSolutionDTO questionSolutionDTO = new QuestionSolutionDTO();
         stub_postNewQuestion(id, lessonEntity, questionSolutionDTO);
 
@@ -194,16 +195,13 @@ class LessonPageServiceTest {
         boolean answerResult = false;
         LessonUserAnswerDTO inputLessonUserAnswerDTO = new LessonUserAnswerDTO();
         String commentary = "commentary";
-        inputLessonUserAnswerDTO.setAnswerCommentary(commentary);
+        inputLessonUserAnswerDTO.setAnswerDiaryEntry(commentary);
 
-        DiaryPageEntity diaryPageEntity = new DiaryPageEntity(LocalDate.of(2024, 9, 9),
-                "The answer is " + answerResult + ". Comments: " + commentary);
+        DiaryPageEntity diaryPageEntity = new DiaryPageEntity();
+        diaryPageEntity.setWrittenDate(LocalDate.of(2024, 9, 9));
+        diaryPageEntity.setEntry("The answer is " + answerResult + ". Comments: " + commentary);
         when(diaryPageRepository.saveAndFlush(any())).thenReturn(diaryPageEntity);
-        DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getId(),
-                diaryPageEntity.getCreatedAt(),
-                diaryPageEntity.getUpdatedAt(),
-                diaryPageEntity.getWrittenDate(),
-                diaryPageEntity.getEntry());
+        DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getWrittenDate(), diaryPageEntity.getEntry());
         when(diaryPageMapper.from(diaryPageEntity)).thenReturn(diaryPageDTO);
 
         DiaryPageDTO result = lessonPageService.postAnswerCommentary(answerResult, inputLessonUserAnswerDTO);

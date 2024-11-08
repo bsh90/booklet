@@ -14,6 +14,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -37,10 +39,24 @@ public class DiaryPageService {
                 .orElseThrow(() -> new EntityNotFoundException("DiaryPage id not found - " + id));
     }
 
+    public List<DiaryPageDTO> getDiaryOfDate(String writtenDateString) {
+        LocalDate writtenDate = LocalDate.parse(writtenDateString);
+        Collection<DiaryPageEntity> diaryEntities = diaryPageRepository.findByWrittenDate(writtenDate);
+        return diaryEntities.stream()
+                .map(entity -> diaryPageMapper.from(entity))
+                .toList();
+    }
+
     public List<DiaryPageDTO> findAllDiaryPageDTO() {
         return diaryPageRepository.findAll()
                 .stream()
                 .map(e -> diaryPageMapper.from(e))
+                .toList();
+    }
+
+    public List<DiaryPageEntity> findAllDiaryPageEntity() {
+        return diaryPageRepository.findAll()
+                .stream()
                 .toList();
     }
 

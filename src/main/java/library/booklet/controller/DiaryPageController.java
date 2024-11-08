@@ -1,11 +1,13 @@
 package library.booklet.controller;
 
 import library.booklet.dto.DiaryPageDTO;
+import library.booklet.entity.DiaryPageEntity;
 import library.booklet.mapper.DiaryPageMapper;
 import library.booklet.service.lesson.DiaryPageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,9 +28,19 @@ public class DiaryPageController {
     @GetMapping("/getDiaryPage")
     public DiaryPageDTO getDiaryPage(@RequestParam("id") Long id) { return diaryPageService.getDiaryPageDTO(id); }
 
+    @GetMapping("/getDiaryOfDate")
+    public List<DiaryPageDTO> getDiaryOfDate(@RequestParam("writtenDate") String writtenDateString) {
+        return diaryPageService.getDiaryOfDate(writtenDateString);
+    }
+
     @GetMapping("/getAllDiaryPages")
     public List<DiaryPageDTO> getAllDiaryPages() {
         return diaryPageService.findAllDiaryPageDTO();
+    }
+
+    @GetMapping("/getAllDiaryPagesWithId")
+    public List<DiaryPageEntity> getAllDiaryPagesWithId() {
+        return diaryPageService.findAllDiaryPageEntity();
     }
 
     @PostMapping("/createDiaryPage")

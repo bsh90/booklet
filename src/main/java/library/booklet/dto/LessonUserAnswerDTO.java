@@ -13,5 +13,5 @@ public class LessonUserAnswerDTO {
 
     private String answerOption;
 
-    private String answerCommentary;
+    private String answerDiaryEntry;
 }
