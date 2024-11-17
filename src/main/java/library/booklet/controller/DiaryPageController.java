@@ -5,9 +5,9 @@ import library.booklet.entity.DiaryPageEntity;
 import library.booklet.mapper.DiaryPageMapper;
 import library.booklet.service.lesson.DiaryPageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -51,5 +51,16 @@ public class DiaryPageController {
     @DeleteMapping("/deleteDiaryPages")
     public void deleteDiaryPage(@RequestParam("id") long diaryPageId) {
         diaryPageService.deleteDiaryPage(diaryPageId);
+    }
+
+    @GetMapping("/sortACSDiaryPageBasedOnWrittenDate")
+    public List<DiaryPageEntity> sortACSDiaryPageBasedOnWrittenDate() {
+        return diaryPageService.sortACSDiaryPageBasedOnWrittenDate();
+    }
+
+    @GetMapping("/requestDiaryPages")
+    public List<DiaryPageEntity> requestDiaryPagesSortByWrittenDate(@RequestParam("pageNumber") int pageNumber,
+                                                   @RequestParam("pageSize") int pageSize) {
+        return diaryPageService.requestDiaryPagesSortByWrittenDate(pageNumber, pageSize);
     }
 }

@@ -55,9 +55,7 @@ public class DiaryPageService {
     }
 
     public List<DiaryPageEntity> findAllDiaryPageEntity() {
-        return diaryPageRepository.findAll()
-                .stream()
-                .toList();
+        return diaryPageRepository.findAll();
     }
 
     public DiaryPageEntity createDiaryPageDTO(DiaryPageDTO diaryPageDTO) {
@@ -69,12 +67,13 @@ public class DiaryPageService {
         diaryPageRepository.deleteById(id);
     }
 
-    public Slice<DiaryPageEntity> requestDiaryPage(int pageNumber, int pageSize) {
-        Pageable firstPage = PageRequest.of(pageNumber, pageSize);
-        return diaryPageRepository.findAll(firstPage);
+    public List<DiaryPageEntity> requestDiaryPagesSortByWrittenDate(int pageNumber, int pageSize) {
+        Pageable firstPage = PageRequest.of(pageNumber, pageSize, Sort.by("writtenDate"));
+        Slice<DiaryPageEntity> pageSlice = diaryPageRepository.findAll(firstPage);
+        return pageSlice.getContent();
     }
 
-    public List<DiaryPageEntity> sortDiaryPageBasedOnWrittenDate() {
-        return diaryPageRepository.findAll(Sort.by("writtenDate"));
+    public List<DiaryPageEntity> sortACSDiaryPageBasedOnWrittenDate() {
+        return diaryPageRepository.findAll(Sort.by(Sort.Direction.ASC,"writtenDate"));
     }
 }
