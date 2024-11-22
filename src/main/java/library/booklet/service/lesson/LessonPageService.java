@@ -118,7 +118,12 @@ public class LessonPageService {
         return questionSolutionMapper.from(questionSolutionEntity);
     }
 
-    public boolean evaluateAnswer(LessonUserAnswerDTO lessonAnswerDTO) {
+    public DiaryPageDTO postNewAnswer(LessonUserAnswerDTO lessonAnswerDTO) {
+        boolean result = evaluateAnswer(lessonAnswerDTO);
+        return postAnswerCommentary(result, lessonAnswerDTO);
+    }
+
+    private boolean evaluateAnswer(LessonUserAnswerDTO lessonAnswerDTO) {
         QuestionSolutionEntity questionSolutionEntity = questionSolutionRepository
                 .findById(lessonAnswerDTO.getQuestionId())
                 .orElseThrow(()->new EntityNotFoundException("Question entity not found"));
@@ -126,7 +131,7 @@ public class LessonPageService {
         return lessonAnswerDTO.getAnswerOption().equals(questionSolutionEntity.getOptionSolution());
     }
 
-    public DiaryPageDTO postAnswerCommentary(boolean answerResult, LessonUserAnswerDTO lessonAnswerDTO) {
+    private DiaryPageDTO postAnswerCommentary(boolean answerResult, LessonUserAnswerDTO lessonAnswerDTO) {
         LocalDate now = LocalDate.now();
         DiaryPageEntity diaryPageEntity = new DiaryPageEntity();
         diaryPageEntity.setWrittenDate(now);
@@ -141,9 +146,5 @@ public class LessonPageService {
         return allLessonEntities.stream()
                 .map(entity -> lessonMapper.from(entity))
                 .collect(Collectors.toList());
-    }
-
-    public void deleteAllLessons() {
-        lessonRepository.deleteAll();
     }
 }

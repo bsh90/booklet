@@ -15,14 +15,23 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountProfileEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ID", unique = true, nullable = false, updatable = false)
     private Long id;
 
-    String name;
+    @Column(nullable=false)
+    String firstName;
 
-    String info;
+    @Column(nullable=false)
+    String lastName;
+
+    @Column(nullable = false, unique = true)
+    String email;
+
+    @Column(nullable=false)
+    String password;
+
 }

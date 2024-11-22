@@ -58,13 +58,7 @@ public class LessonPageController {
 
     @PostMapping("/postNewAnswer")
     public DiaryPageDTO postNewAnswer(@RequestBody LessonUserAnswerDTO userAnswerDTO) {
-        boolean result = lessonPageService.evaluateAnswer(userAnswerDTO);
-        return lessonPageService.postAnswerCommentary(result, userAnswerDTO);
-    }
-
-    @DeleteMapping("/deleteAllLessons")
-    public void deleteAllLessons() {
-        lessonPageService.deleteAllLessons();
+        return lessonPageService.postNewAnswer(userAnswerDTO);
     }
 
     @GetMapping("/getAllLessons")

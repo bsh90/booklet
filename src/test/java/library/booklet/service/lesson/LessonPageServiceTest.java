@@ -9,12 +9,14 @@ import library.booklet.dto.QuestionSolutionDTO;
 import library.booklet.entity.DiaryPageEntity;
 import library.booklet.entity.LessonEntity;
 import library.booklet.entity.QuestionSolutionEntity;
+import library.booklet.exception.EntityNotFoundException;
 import library.booklet.mapper.DiaryPageMapper;
 import library.booklet.mapper.LessonMapper;
 import library.booklet.mapper.QuestionSolutionMapper;
 import library.booklet.repository.DiaryPageRepository;
 import library.booklet.repository.LessonRepository;
 import library.booklet.repository.QuestionSolutionRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +60,7 @@ class LessonPageServiceTest {
     }
 
     @Test
-    void getLessonDTO() {
+    void happyPath_getLessonDTO() {
         Long sampleId = 1L;
         LessonEntity lessonEntity = new LessonEntity();
         LessonDTO lessonDTO = new LessonDTO();
@@ -69,12 +71,22 @@ class LessonPageServiceTest {
     }
 
     void stub_getLessonDTO(Long id, LessonEntity lessonEntity, LessonDTO lessonDTO) {
-        when(lessonRepository.findById(id)).thenReturn(Optional.ofNullable(lessonEntity));
-        when(lessonMapper.from(lessonEntity)).thenReturn(lessonDTO);
+        when(lessonRepository.findById(eq(id))).thenReturn(Optional.ofNullable(lessonEntity));
+        when(lessonMapper.from(eq(lessonEntity))).thenReturn(lessonDTO);
     }
 
     @Test
-    void getLessonSolutionDTO() {
+    void nullLessonEntity_getLessonDTO() {
+        Long sampleId = 1L;
+        stub_getLessonDTO(sampleId, null, null);
+
+        Assertions.assertThrows(EntityNotFoundException.class,
+                ()-> lessonPageService.getLessonDTO(sampleId),
+                "Lesson id not found - 1");
+    }
+
+    @Test
+    void happyPath_getLessonSolutionDTO() {
         Long sampleId = 1L;
         QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity();
         QuestionSolutionDTO questionSolutionDTO = new QuestionSolutionDTO();
@@ -90,7 +102,7 @@ class LessonPageServiceTest {
     }
 
     @Test
-    void postNewLesson() {
+    void happyPath_postNewLesson() {
         String lesson = "lesson";
         String question = "question";
         String answerOptionSolution = "answerOptionSolution";
@@ -140,7 +152,7 @@ class LessonPageServiceTest {
     }
 
     @Test
-    void updateLesson() {
+    void happyPath_updateLesson() {
         LessonEntity lessonEntity = new LessonEntity();
         LessonDTO lessonDTO = new LessonDTO();
         LessonEntity updateLessonEntity = new LessonEntity();
@@ -160,7 +172,7 @@ class LessonPageServiceTest {
     }
 
     @Test
-    void postNewQuestion() {
+    void happyPath_postNewQuestion() {
         Long id = 1L;
         String question = "question";
         String answerOptionSolution = "answerOptionSolution";
@@ -191,20 +203,53 @@ class LessonPageServiceTest {
     }
 
     @Test
-    void postAnswerCommentary() {
-        boolean answerResult = false;
+    void happyPath_postNewAnswer() {
         LessonUserAnswerDTO inputLessonUserAnswerDTO = new LessonUserAnswerDTO();
         String commentary = "commentary";
         inputLessonUserAnswerDTO.setAnswerDiaryEntry(commentary);
+        inputLessonUserAnswerDTO.setQuestionId(1L);
+        inputLessonUserAnswerDTO.setAnswerOption("SameAnswer");
+
+        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity();
+        questionSolutionEntity.setOptionSolution("SameAnswer");
 
         DiaryPageEntity diaryPageEntity = new DiaryPageEntity();
         diaryPageEntity.setWrittenDate(LocalDate.of(2024, 9, 9));
-        diaryPageEntity.setEntry("The answer is " + answerResult + ". Comments: " + commentary);
-        when(diaryPageRepository.saveAndFlush(any())).thenReturn(diaryPageEntity);
+        diaryPageEntity.setEntry("The answer is " + "true" + ". Comments: " + commentary);
         DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getWrittenDate(), diaryPageEntity.getEntry());
-        when(diaryPageMapper.from(diaryPageEntity)).thenReturn(diaryPageDTO);
 
-        DiaryPageDTO result = lessonPageService.postAnswerCommentary(answerResult, inputLessonUserAnswerDTO);
+        stub_HappyPath_PostNewAnswer(inputLessonUserAnswerDTO, questionSolutionEntity, diaryPageEntity, diaryPageDTO);
+
+        DiaryPageDTO result = lessonPageService.postNewAnswer(inputLessonUserAnswerDTO);
+        assertThat(result).isEqualTo(diaryPageDTO);
+    }
+
+    private void stub_HappyPath_PostNewAnswer(LessonUserAnswerDTO inputLessonUserAnswerDTO, QuestionSolutionEntity questionSolutionEntity, DiaryPageEntity diaryPageEntity, DiaryPageDTO diaryPageDTO) {
+        when(questionSolutionRepository.findById(eq(inputLessonUserAnswerDTO.getQuestionId())))
+                .thenReturn(Optional.of(questionSolutionEntity));
+        when(diaryPageRepository.saveAndFlush(any())).thenReturn(diaryPageEntity);
+        when(diaryPageMapper.from(diaryPageEntity)).thenReturn(diaryPageDTO);
+    }
+
+    @Test
+    void false_postNewAnswer() {
+        LessonUserAnswerDTO inputLessonUserAnswerDTO = new LessonUserAnswerDTO();
+        String commentary = "commentary";
+        inputLessonUserAnswerDTO.setAnswerDiaryEntry(commentary);
+        inputLessonUserAnswerDTO.setQuestionId(1L);
+        inputLessonUserAnswerDTO.setAnswerOption("Answer");
+
+        QuestionSolutionEntity questionSolutionEntity = new QuestionSolutionEntity();
+        questionSolutionEntity.setOptionSolution("AnotherAnswer");
+
+        DiaryPageEntity diaryPageEntity = new DiaryPageEntity();
+        diaryPageEntity.setWrittenDate(LocalDate.of(2024, 9, 9));
+        diaryPageEntity.setEntry("The answer is " + "false" + ". Comments: " + commentary);
+        DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getWrittenDate(), diaryPageEntity.getEntry());
+
+        stub_HappyPath_PostNewAnswer(inputLessonUserAnswerDTO, questionSolutionEntity, diaryPageEntity, diaryPageDTO);
+
+        DiaryPageDTO result = lessonPageService.postNewAnswer(inputLessonUserAnswerDTO);
         assertThat(result).isEqualTo(diaryPageDTO);
     }
 }
