@@ -8,6 +8,7 @@ import library.booklet.dto.QuestionPostDTO;
 import library.booklet.dto.QuestionSolutionDTO;
 import library.booklet.service.lesson.LessonPageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,43 +27,50 @@ public class LessonPageController {
     LessonPageService lessonPageService;
 
     @GetMapping("/getLessonPageById")
-    public LessonDTO getLesson(@RequestParam("id") Long id) {
-
-        return lessonPageService.getLessonDTO(id);
+    public ResponseEntity<LessonDTO> getLesson(@RequestParam("id") Long id) {
+        LessonDTO lessonDTO = lessonPageService.getLessonDTO(id);
+        return ResponseEntity.ok(lessonDTO);
     }
 
     @PostMapping("/postNewLesson")
-    public LessonDTO postNewLesson(@RequestBody LessonPostDTO lessonPostDTO) {
-        return lessonPageService.postNewLesson(lessonPostDTO);
+    public ResponseEntity<LessonDTO> postNewLesson(@RequestBody LessonPostDTO lessonPostDTO) {
+        LessonDTO lessonDTO = lessonPageService.postNewLesson(lessonPostDTO);
+        return ResponseEntity.ok(lessonDTO);
     }
 
     @DeleteMapping("/deleteLesson")
-    public void deleteLesson(@RequestParam Long lessonId) {
+    public ResponseEntity deleteLesson(@RequestParam Long lessonId) {
         lessonPageService.deleteLesson(lessonId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/updateLesson")
-    public LessonDTO updateLesson(@RequestBody LessonDTO lessonDTO) {
-        return lessonPageService.updateLesson(lessonDTO);
+    public ResponseEntity<LessonDTO> updateLesson(@RequestBody LessonDTO lessonDTO) {
+        LessonDTO lesson = lessonPageService.updateLesson(lessonDTO);
+        return ResponseEntity.ok(lesson);
     }
 
     @PostMapping("/postNewQuestion")
-    public QuestionSolutionDTO postNewQuestion(@RequestBody QuestionPostDTO questionPostDTO) {
-        return lessonPageService.postNewQuestion(questionPostDTO);
+    public ResponseEntity<QuestionSolutionDTO> postNewQuestion(@RequestBody QuestionPostDTO questionPostDTO) {
+        QuestionSolutionDTO questionSolutionDTO = lessonPageService.postNewQuestion(questionPostDTO);
+        return ResponseEntity.ok(questionSolutionDTO);
     }
 
     @DeleteMapping("/deleteQuestion")
-    public void deleteQuestion(@RequestParam Long questionId) {
+    public ResponseEntity deleteQuestion(@RequestParam Long questionId) {
         lessonPageService.deleteQuestion(questionId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/postNewAnswer")
-    public DiaryPageDTO postNewAnswer(@RequestBody LessonUserAnswerDTO userAnswerDTO) {
-        return lessonPageService.postNewAnswer(userAnswerDTO);
+    public ResponseEntity<DiaryPageDTO> postNewAnswer(@RequestBody LessonUserAnswerDTO userAnswerDTO) {
+        DiaryPageDTO diaryPageDTO = lessonPageService.postNewAnswer(userAnswerDTO);
+        return ResponseEntity.ok(diaryPageDTO);
     }
 
     @GetMapping("/getAllLessons")
-    public List<LessonDTO> getAllLessons() {
-        return lessonPageService.getAllLessons();
+    public ResponseEntity<List<LessonDTO>> getAllLessons() {
+        List<LessonDTO> lessonDTOS = lessonPageService.getAllLessons();
+        return ResponseEntity.ok(lessonDTOS);
     }
 }

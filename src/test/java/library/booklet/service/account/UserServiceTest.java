@@ -7,6 +7,7 @@ import library.booklet.mapper.UserMapper;
 import library.booklet.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,8 +40,8 @@ class UserServiceTest {
 
         stub_saveUser(userDTO, userEntity, encodedPass);
 
-        UserEntity result = userService.saveUser(userDTO);
-        assertThat(result).isEqualTo(userEntity);
+        ResponseEntity<?> result = userService.saveUser(userDTO);
+        assertThat(result.getBody()).isEqualTo(userEntity);
     }
 
     void stub_saveUser(UserDTO userDTO, UserEntity userEntity, String encodedPass) {
@@ -55,8 +56,8 @@ class UserServiceTest {
         UserEntity userEntity = new UserEntity();
         stub_login(userEntity);
 
-        boolean result = userService.login(loginInputDTO);
-        assertThat(result).isTrue();
+        ResponseEntity<?> result = userService.login(loginInputDTO);
+        assertThat(result.getBody()).isEqualTo(true);
     }
 
     void stub_login(UserEntity userEntity) {

@@ -5,6 +5,7 @@ import library.booklet.dto.UserDTO;
 import library.booklet.entity.UserEntity;
 import library.booklet.service.account.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,17 +19,18 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/saveUser")
-    public UserEntity saveUser(UserDTO userDto) {
+    public ResponseEntity<?> saveUser(UserDTO userDto) {
         return userService.saveUser(userDto);
     }
 
     @GetMapping("/login")
-    public boolean login(LoginInputDTO loginInputDTO) {
+    public ResponseEntity<?> login(LoginInputDTO loginInputDTO) {
         return userService.login(loginInputDTO);
     }
 
     @GetMapping("/findAllUser")
-    public List<UserEntity> findAllUsers() {
-        return userService.findAllUsers();
+    public ResponseEntity<List<UserEntity>> findAllUsers() {
+        List<UserEntity> userEntities = userService.findAllUsers();
+        return ResponseEntity.ok(userEntities);
     }
 }

@@ -5,6 +5,7 @@ import library.booklet.entity.DiaryPageEntity;
 import library.booklet.mapper.DiaryPageMapper;
 import library.booklet.service.lesson.DiaryPageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,41 +31,51 @@ public class DiaryPageController {
     }
 
     @GetMapping("/getDiaryPage")
-    public DiaryPageDTO getDiaryPage(@RequestParam("id") Long id) { return diaryPageService.getDiaryPageDTO(id); }
+    public ResponseEntity<DiaryPageDTO> getDiaryPage(@RequestParam("id") Long id) {
+        DiaryPageDTO diaryPageDTO = diaryPageService.getDiaryPageDTO(id);
+        return ResponseEntity.ok(diaryPageDTO);
+    }
 
     @GetMapping("/getDiaryOfDate")
-    public List<DiaryPageDTO> getDiaryOfDate(@RequestParam("writtenDate") String writtenDateString) {
-        return diaryPageService.getDiaryOfDate(writtenDateString);
+    public ResponseEntity<List<DiaryPageDTO>> getDiaryOfDate(@RequestParam("writtenDate") String writtenDateString) {
+        List<DiaryPageDTO> diaryPageDTOList = diaryPageService.getDiaryOfDate(writtenDateString);
+        return ResponseEntity.ok(diaryPageDTOList);
     }
 
     @GetMapping("/getAllDiaryPages")
-    public List<DiaryPageDTO> getAllDiaryPages() {
-        return diaryPageService.findAllDiaryPageDTO();
+    public ResponseEntity<List<DiaryPageDTO>> getAllDiaryPages() {
+        List<DiaryPageDTO> diaryPageDTOList = diaryPageService.findAllDiaryPageDTO();
+        return ResponseEntity.ok(diaryPageDTOList);
     }
 
     @GetMapping("/getAllDiaryPagesWithId")
-    public List<DiaryPageEntity> getAllDiaryPagesWithId() {
-        return diaryPageService.findAllDiaryPageEntity();
+    public ResponseEntity<List<DiaryPageEntity>> getAllDiaryPagesWithId() {
+        List<DiaryPageEntity> diaryPageEntities = diaryPageService.findAllDiaryPageEntity();
+        return ResponseEntity.ok(diaryPageEntities);
     }
 
     @PostMapping("/createDiaryPage")
-    public void createDiaryPage(@RequestBody DiaryPageDTO diaryPageDTO) {
+    public ResponseEntity createDiaryPage(@RequestBody DiaryPageDTO diaryPageDTO) {
         diaryPageService.createDiaryPageDTO(diaryPageDTO);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/deleteDiaryPages")
-    public void deleteDiaryPage(@RequestParam("id") long diaryPageId) {
+    public ResponseEntity deleteDiaryPage(@RequestParam("id") long diaryPageId) {
         diaryPageService.deleteDiaryPage(diaryPageId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/sortACSDiaryPageBasedOnWrittenDate")
-    public List<DiaryPageEntity> sortACSDiaryPageBasedOnWrittenDate() {
-        return diaryPageService.sortACSDiaryPageBasedOnWrittenDate();
+    public ResponseEntity<List<DiaryPageEntity>> sortACSDiaryPageBasedOnWrittenDate() {
+        List<DiaryPageEntity> diaryPageEntities = diaryPageService.sortACSDiaryPageBasedOnWrittenDate();
+        return ResponseEntity.ok(diaryPageEntities);
     }
 
     @GetMapping("/requestDiaryPages")
-    public List<DiaryPageEntity> requestDiaryPagesSortByWrittenDate(@RequestParam("pageNumber") int pageNumber,
+    public ResponseEntity<List<DiaryPageEntity>> requestDiaryPagesSortByWrittenDate(@RequestParam("pageNumber") int pageNumber,
                                                    @RequestParam("pageSize") int pageSize) {
-        return diaryPageService.requestDiaryPagesSortByWrittenDate(pageNumber, pageSize);
+        List<DiaryPageEntity> diaryPageEntities = diaryPageService.requestDiaryPagesSortByWrittenDate(pageNumber, pageSize);
+        return ResponseEntity.ok(diaryPageEntities);
     }
 }

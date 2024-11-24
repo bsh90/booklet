@@ -1,17 +1,16 @@
 package library.booklet.service.account;
 
-import library.booklet.exception.NotValidEmailException;
 import org.apache.commons.validator.routines.EmailValidator;
 import library.booklet.dto.LoginInputDTO;
 import library.booklet.dto.UserDTO;
 import library.booklet.entity.UserEntity;
-import library.booklet.exception.DuplicateEmailException;
 import library.booklet.mapper.UserMapper;
 import library.booklet.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,28 +29,24 @@ public class UserService {
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserEntity saveUser(UserDTO userDto) {
-        validateEmail(userDto);
+    public ResponseEntity<?> saveUser(UserDTO userDto) {
+        UserEntity foundUser = userRepository.findByEmail(userDto.getEmail());
+        if (foundUser != null) {
+            return ResponseEntity.status(400).body("The email already exists in the database!");
+        }
+        boolean validEmail = EmailValidator.getInstance().isValid(userDto.getEmail());
+        if (!validEmail) {
+            return ResponseEntity.status(400).body("The email is not valid!");
+        }
 
         UserEntity user = new UserEntity();
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        UserEntity userEntity = userRepository.saveAndFlush(user);
 
-        return userRepository.saveAndFlush(user);
-    }
-
-    private void validateEmail(UserDTO userDTO) throws DuplicateEmailException,
-            NotValidEmailException{
-        UserEntity foundUser = userRepository.findByEmail(userDTO.getEmail());
-        if (foundUser != null) {
-            throw new DuplicateEmailException("The email is already in database.");
-        }
-        boolean validEmail = EmailValidator.getInstance().isValid(userDTO.getEmail());
-        if (!validEmail) {
-            throw new NotValidEmailException("The email is not valid!");
-        }
+        return ResponseEntity.ok(userEntity);
     }
 
     public List<UserEntity> findAllUsers() {
@@ -62,8 +57,13 @@ public class UserService {
         userRepository.deleteAll();
     }
 
-    public boolean login(LoginInputDTO loginInputDTO) {
+    public ResponseEntity<?> login(LoginInputDTO loginInputDTO) {
+        boolean validEmail = EmailValidator.getInstance().isValid(loginInputDTO.getEmail());
+        if (!validEmail) {
+            return ResponseEntity.status(400).body("The email is not valid!");
+        }
         UserEntity userEntity = userRepository.findByEmail(loginInputDTO.getEmail());
-        return passwordEncoder.matches(loginInputDTO.getPassword(), userEntity.getPassword());
+        Boolean isLogin = passwordEncoder.matches(loginInputDTO.getPassword(), userEntity.getPassword());
+        return ResponseEntity.ok(isLogin);
     }
 }
