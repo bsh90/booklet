@@ -32,10 +32,13 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser() {
-        UserDTO userDTO = new UserDTO();
-        UserEntity userEntity = new UserEntity();
+    void happyPath_saveUser() {
         String encodedPass = "encoded";
+        String email = "bsh@yahoo.com";
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(email);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setEmail(email);
         userEntity.setPassword(encodedPass);
 
         stub_saveUser(userDTO, userEntity, encodedPass);
@@ -52,8 +55,11 @@ class UserServiceTest {
 
     @Test
     void happyPath_login() {
+        String email = "bsh@yahoo.com";
         LoginInputDTO loginInputDTO = new LoginInputDTO();
+        loginInputDTO.setEmail(email);
         UserEntity userEntity = new UserEntity();
+        userEntity.setEmail(email);
         stub_login(userEntity);
 
         ResponseEntity<?> result = userService.login(loginInputDTO);

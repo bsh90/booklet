@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,12 +20,12 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/saveUser")
-    public ResponseEntity<?> saveUser(UserDTO userDto) {
+    public ResponseEntity<?> saveUser(@RequestBody UserDTO userDto) {
         return userService.saveUser(userDto);
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<?> login(LoginInputDTO loginInputDTO) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginInputDTO loginInputDTO) {
         return userService.login(loginInputDTO);
     }
 
