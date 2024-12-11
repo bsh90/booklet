@@ -7,6 +7,8 @@ import library.booklet.repository.DiaryPageRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -38,10 +40,11 @@ class DiaryPageServiceTest {
         Long sampleId = 1L;
         DiaryPageEntity diaryPageEntity = new DiaryPageEntity();
         DiaryPageDTO expectedDiaryPageDTO = new DiaryPageDTO();
+        ResponseEntity<?> response = ResponseEntity.ok(expectedDiaryPageDTO);
         stub_getDiaryPageDTO(sampleId, diaryPageEntity, expectedDiaryPageDTO);
 
-        DiaryPageDTO result = diaryPageService.getDiaryPageDTO(sampleId);
-        assertThat(result).isEqualTo(expectedDiaryPageDTO);
+        ResponseEntity<?> result = diaryPageService.getDiaryPageDTO(sampleId);
+        assertThat(result).isEqualTo(response);
     }
 
     private void stub_getDiaryPageDTO(Long sampleId,

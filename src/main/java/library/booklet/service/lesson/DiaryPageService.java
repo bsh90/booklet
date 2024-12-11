@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,9 +30,14 @@ public class DiaryPageService {
     @Autowired
     DiaryPageMapper diaryPageMapper;
 
-    public DiaryPageDTO getDiaryPageDTO(Long id) {
-        DiaryPageEntity diaryPageEntity = findDiaryPageEntity(id);
-        return diaryPageMapper.from(diaryPageEntity);
+    public ResponseEntity<?> getDiaryPageDTO(Long id) {
+        try {
+            DiaryPageEntity diaryPageEntity = findDiaryPageEntity(id);
+            DiaryPageDTO diaryPageDTO = diaryPageMapper.from(diaryPageEntity);
+            return ResponseEntity.ok(diaryPageDTO);
+        } catch(EntityNotFoundException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
     private DiaryPageEntity findDiaryPageEntity(Long id) {
@@ -62,9 +68,14 @@ public class DiaryPageService {
         return diaryPageRepository.saveAndFlush(diaryPageMapper.to(diaryPageDTO));
     }
 
-    public void deleteDiaryPage(Long id) {
-        findDiaryPageEntity(id);
-        diaryPageRepository.deleteById(id);
+    public ResponseEntity<?> deleteDiaryPage(Long id) {
+        try{
+            findDiaryPageEntity(id);
+            diaryPageRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } catch(EntityNotFoundException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
     public List<DiaryPageEntity> requestDiaryPagesSortByWrittenDate(int pageNumber, int pageSize) {

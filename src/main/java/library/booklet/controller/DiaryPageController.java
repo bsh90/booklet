@@ -31,9 +31,9 @@ public class DiaryPageController {
     }
 
     @GetMapping("/getDiaryPage")
-    public ResponseEntity<DiaryPageDTO> getDiaryPage(@RequestParam("id") Long id) {
-        DiaryPageDTO diaryPageDTO = diaryPageService.getDiaryPageDTO(id);
-        return ResponseEntity.ok(diaryPageDTO);
+    public ResponseEntity<?> getDiaryPage(@RequestParam("id") Long id) {
+        return diaryPageService.getDiaryPageDTO(id);
+
     }
 
     @GetMapping("/getDiaryOfDate")
@@ -55,15 +55,14 @@ public class DiaryPageController {
     }
 
     @PostMapping("/createDiaryPage")
-    public ResponseEntity createDiaryPage(@RequestBody DiaryPageDTO diaryPageDTO) {
-        diaryPageService.createDiaryPageDTO(diaryPageDTO);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<DiaryPageEntity> createDiaryPage(@RequestBody DiaryPageDTO diaryPageDTO) {
+        DiaryPageEntity diaryPageEntity = diaryPageService.createDiaryPageDTO(diaryPageDTO);
+        return ResponseEntity.ok(diaryPageEntity);
     }
 
     @DeleteMapping("/deleteDiaryPages")
-    public ResponseEntity deleteDiaryPage(@RequestParam("id") long diaryPageId) {
-        diaryPageService.deleteDiaryPage(diaryPageId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteDiaryPage(@RequestParam("id") long diaryPageId) {
+        return diaryPageService.deleteDiaryPage(diaryPageId);
     }
 
     @GetMapping("/sortACSDiaryPageBasedOnWrittenDate")
