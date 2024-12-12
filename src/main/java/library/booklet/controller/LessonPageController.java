@@ -1,6 +1,5 @@
 package library.booklet.controller;
 
-import library.booklet.dto.DiaryPageDTO;
 import library.booklet.dto.LessonDTO;
 import library.booklet.dto.LessonPostDTO;
 import library.booklet.dto.LessonUserAnswerDTO;
@@ -27,9 +26,8 @@ public class LessonPageController {
     LessonPageService lessonPageService;
 
     @GetMapping("/getLessonPageById")
-    public ResponseEntity<LessonDTO> getLesson(@RequestParam("id") Long id) {
-        LessonDTO lessonDTO = lessonPageService.getLessonDTO(id);
-        return ResponseEntity.ok(lessonDTO);
+    public ResponseEntity<?> getLesson(@RequestParam("id") Long id) {
+        return lessonPageService.getLessonDTO(id);
     }
 
     @PostMapping("/postNewLesson")
@@ -39,15 +37,14 @@ public class LessonPageController {
     }
 
     @DeleteMapping("/deleteLesson")
-    public ResponseEntity deleteLesson(@RequestParam Long lessonId) {
+    public ResponseEntity deleteLesson(@RequestParam("id") Long lessonId) {
         lessonPageService.deleteLesson(lessonId);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/updateLesson")
-    public ResponseEntity<LessonDTO> updateLesson(@RequestBody LessonDTO lessonDTO) {
-        LessonDTO lesson = lessonPageService.updateLesson(lessonDTO);
-        return ResponseEntity.ok(lesson);
+    public ResponseEntity<?> updateLesson(@RequestBody LessonDTO lessonDTO) {
+        return lessonPageService.updateLesson(lessonDTO);
     }
 
     @PostMapping("/postNewQuestion")
@@ -57,15 +54,14 @@ public class LessonPageController {
     }
 
     @DeleteMapping("/deleteQuestion")
-    public ResponseEntity deleteQuestion(@RequestParam Long questionId) {
+    public ResponseEntity deleteQuestion(@RequestParam("id") Long questionId) {
         lessonPageService.deleteQuestion(questionId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/postNewAnswer")
-    public ResponseEntity<DiaryPageDTO> postNewAnswer(@RequestBody LessonUserAnswerDTO userAnswerDTO) {
-        DiaryPageDTO diaryPageDTO = lessonPageService.postNewAnswer(userAnswerDTO);
-        return ResponseEntity.ok(diaryPageDTO);
+    public ResponseEntity<?> postNewAnswer(@RequestBody LessonUserAnswerDTO userAnswerDTO) {
+        return lessonPageService.postNewAnswer(userAnswerDTO);
     }
 
     @GetMapping("/getAllLessons")

@@ -19,6 +19,8 @@ import library.booklet.repository.QuestionSolutionRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -54,10 +56,13 @@ public class LessonPageService {
     @Autowired
     QuestionSolutionMapper questionSolutionMapper;
 
-    public LessonDTO getLessonDTO(Long id) {
-        LessonEntity lessonEntity = lessonRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Lesson id not found - " + id));
-        return lessonMapper.from(lessonEntity);
+    public ResponseEntity<?> getLessonDTO(Long id) {
+        Optional<LessonEntity> lessonEntity = lessonRepository.findById(id);
+        if (lessonEntity.isEmpty()) {
+            return ResponseEntity.status(400).body("Lesson id not found - " + id);
+        }
+        LessonDTO lessonDTO = lessonMapper.from(lessonEntity.get());
+        return ResponseEntity.ok(lessonDTO);
     }
 
     public QuestionSolutionDTO getLessonSolutionDTO(Long lessonPageEntityId) {
@@ -93,15 +98,19 @@ public class LessonPageService {
         questionSolutionRepository.deleteById(id);
     }
 
-    public LessonDTO updateLesson(LessonDTO lessonDTO) {
+    public ResponseEntity<?> updateLesson(LessonDTO lessonDTO) {
+        if (lessonDTO.getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("LessonDTO doesn't have Id.");
+        }
         Optional<LessonEntity> lessonEntityOptional = lessonRepository.findById(lessonDTO.getId());
         if (lessonEntityOptional.isPresent()) {
             LessonEntity lessonEntity = lessonMapper.to(lessonDTO);
             LessonEntity updatedLessonEntity = lessonRepository.saveAndFlush(lessonEntity);
 
-            return lessonMapper.from(updatedLessonEntity);
+            LessonDTO lessonDTOResult = lessonMapper.from(updatedLessonEntity);
+            return ResponseEntity.ok(lessonDTOResult);
         } else {
-            throw new EntityNotFoundException("Lesson not found.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lesson not found.");
         }
     }
 
@@ -118,9 +127,13 @@ public class LessonPageService {
         return questionSolutionMapper.from(questionSolutionEntity);
     }
 
-    public DiaryPageDTO postNewAnswer(LessonUserAnswerDTO lessonAnswerDTO) {
-        boolean result = evaluateAnswer(lessonAnswerDTO);
-        return postAnswerCommentary(result, lessonAnswerDTO);
+    public ResponseEntity<?> postNewAnswer(LessonUserAnswerDTO lessonAnswerDTO) {
+        try{
+            boolean result = evaluateAnswer(lessonAnswerDTO);
+            return ResponseEntity.ok(postAnswerCommentary(result, lessonAnswerDTO));
+        } catch(EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     private boolean evaluateAnswer(LessonUserAnswerDTO lessonAnswerDTO) {

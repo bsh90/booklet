@@ -9,16 +9,16 @@ import library.booklet.dto.QuestionSolutionDTO;
 import library.booklet.entity.DiaryPageEntity;
 import library.booklet.entity.LessonEntity;
 import library.booklet.entity.QuestionSolutionEntity;
-import library.booklet.exception.EntityNotFoundException;
 import library.booklet.mapper.DiaryPageMapper;
 import library.booklet.mapper.LessonMapper;
 import library.booklet.mapper.QuestionSolutionMapper;
 import library.booklet.repository.DiaryPageRepository;
 import library.booklet.repository.LessonRepository;
 import library.booklet.repository.QuestionSolutionRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -64,10 +64,11 @@ class LessonPageServiceTest {
         Long sampleId = 1L;
         LessonEntity lessonEntity = new LessonEntity();
         LessonDTO lessonDTO = new LessonDTO();
+        ResponseEntity<?> response = ResponseEntity.ok(lessonDTO);
         stub_getLessonDTO(sampleId, lessonEntity, lessonDTO);
 
-        LessonDTO result = lessonPageService.getLessonDTO(sampleId);
-        assertThat(result).isEqualTo(lessonDTO);
+        ResponseEntity<?> result = lessonPageService.getLessonDTO(sampleId);
+        assertThat(result).isEqualTo(response);
     }
 
     void stub_getLessonDTO(Long id, LessonEntity lessonEntity, LessonDTO lessonDTO) {
@@ -80,9 +81,9 @@ class LessonPageServiceTest {
         Long sampleId = 1L;
         stub_getLessonDTO(sampleId, null, null);
 
-        Assertions.assertThrows(EntityNotFoundException.class,
-                ()-> lessonPageService.getLessonDTO(sampleId),
-                "Lesson id not found - 1");
+        ResponseEntity<?> response = lessonPageService.getLessonDTO(sampleId);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isEqualTo("Lesson id not found - 1");
     }
 
     @Test
@@ -155,12 +156,14 @@ class LessonPageServiceTest {
     void happyPath_updateLesson() {
         LessonEntity lessonEntity = new LessonEntity();
         LessonDTO lessonDTO = new LessonDTO();
+        lessonDTO.setId(1L);
         LessonEntity updateLessonEntity = new LessonEntity();
         LessonDTO updateLessonDTO = new LessonDTO();
+        ResponseEntity<?> response = ResponseEntity.ok(updateLessonDTO);
         sub_updateLesson(lessonEntity, lessonDTO, updateLessonEntity, updateLessonDTO);
 
-        LessonDTO result = lessonPageService.updateLesson(lessonDTO);
-        assertThat(result).isEqualTo(updateLessonDTO);
+        ResponseEntity<?> result = lessonPageService.updateLesson(lessonDTO);
+        assertThat(result).isEqualTo(response);
     }
 
     void sub_updateLesson(LessonEntity lessonEntity, LessonDTO lessonDTO, LessonEntity updateLessonEntity,
@@ -217,11 +220,12 @@ class LessonPageServiceTest {
         diaryPageEntity.setWrittenDate(LocalDate.of(2024, 9, 9));
         diaryPageEntity.setEntry("The answer is " + "true" + ". Comments: " + commentary);
         DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getWrittenDate(), diaryPageEntity.getEntry());
+        ResponseEntity<?> response = ResponseEntity.ok(diaryPageDTO);
 
         stub_HappyPath_PostNewAnswer(inputLessonUserAnswerDTO, questionSolutionEntity, diaryPageEntity, diaryPageDTO);
 
-        DiaryPageDTO result = lessonPageService.postNewAnswer(inputLessonUserAnswerDTO);
-        assertThat(result).isEqualTo(diaryPageDTO);
+        ResponseEntity<?> result = lessonPageService.postNewAnswer(inputLessonUserAnswerDTO);
+        assertThat(result).isEqualTo(response);
     }
 
     private void stub_HappyPath_PostNewAnswer(LessonUserAnswerDTO inputLessonUserAnswerDTO, QuestionSolutionEntity questionSolutionEntity, DiaryPageEntity diaryPageEntity, DiaryPageDTO diaryPageDTO) {
@@ -246,10 +250,11 @@ class LessonPageServiceTest {
         diaryPageEntity.setWrittenDate(LocalDate.of(2024, 9, 9));
         diaryPageEntity.setEntry("The answer is " + "false" + ". Comments: " + commentary);
         DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getWrittenDate(), diaryPageEntity.getEntry());
+        ResponseEntity<?> response = ResponseEntity.ok(diaryPageDTO);
 
         stub_HappyPath_PostNewAnswer(inputLessonUserAnswerDTO, questionSolutionEntity, diaryPageEntity, diaryPageDTO);
 
-        DiaryPageDTO result = lessonPageService.postNewAnswer(inputLessonUserAnswerDTO);
-        assertThat(result).isEqualTo(diaryPageDTO);
+        ResponseEntity result = lessonPageService.postNewAnswer(inputLessonUserAnswerDTO);
+        assertThat(result).isEqualTo(response);
     }
 }

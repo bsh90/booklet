@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserServiceIntegrationTest {
+public class UserIntegrationTest {
 
     @Autowired
     UserRepository userRepository;
