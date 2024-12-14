@@ -28,12 +28,16 @@ public class QuestionSolutionEntity {
     @Column(name = "ID", unique = true, nullable = false, updatable = false)
     private Long id;
 
+    @Column(name = "Question")
     private String question;
 
+    @Column(name = "Options")
     private List<String> options;
 
+    @Column(name = "OptionSolution")
     private String optionSolution;
 
+    @Column(name = "Description")
     private String description;
 
     @ManyToOne

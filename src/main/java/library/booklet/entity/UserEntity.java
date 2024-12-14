@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,16 +22,16 @@ public class UserEntity {
     @Column(name = "ID", unique = true, nullable = false, updatable = false)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(name = "FirstName", nullable=false)
     String firstName;
 
-    @Column(nullable=false)
+    @Column(name = "LastName", nullable=false)
     String lastName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "Email", nullable = false, unique = true)
     String email;
 
-    @Column(nullable=false)
+    @Column(name= "Password", nullable=false)
     String password;
 
 }

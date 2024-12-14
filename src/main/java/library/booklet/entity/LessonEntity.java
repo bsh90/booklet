@@ -29,6 +29,7 @@ public class LessonEntity {
     @Column(name = "ID", unique = true, nullable = false, updatable = false)
     private Long id;
 
+    @Column(name = "Entry")
     private String entry;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "lesson", cascade=CascadeType.ALL)
