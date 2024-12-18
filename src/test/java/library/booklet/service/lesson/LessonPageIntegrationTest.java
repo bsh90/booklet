@@ -127,7 +127,7 @@ public class LessonPageIntegrationTest {
         ResponseEntity<LessonDTO> response = testRestTemplate.exchange("/postNewLesson",
                 HttpMethod.POST, httpEntity, LessonDTO.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getEntry()).isEqualTo(lessonText);
         QuestionSolutionDTO question = response.getBody().getQuestions().iterator().next();
@@ -140,7 +140,7 @@ public class LessonPageIntegrationTest {
     @Test
     void happyPath_deleteLesson() {
         ResponseEntity<?> response = testRestTemplate.exchange("/deleteLesson"+"?id="+lesson.getId(),
-                HttpMethod.DELETE, getHttpEntity(), String.class);
+                HttpMethod.DELETE, getHttpEntity(), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -218,7 +218,7 @@ public class LessonPageIntegrationTest {
         ResponseEntity<QuestionSolutionDTO> response = testRestTemplate.exchange("/postNewQuestion",
                 HttpMethod.POST, httpEntity, QuestionSolutionDTO.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         QuestionSolutionDTO question = response.getBody();
         assertThat(question).isNotNull();
         assertThat(question.getQuestion()).isEqualTo(questionText);
@@ -231,7 +231,7 @@ public class LessonPageIntegrationTest {
     void happyPath_deleteQuestion() {
         ResponseEntity<?> response = testRestTemplate.exchange("/deleteQuestion"+
                         "?id="+lesson.getQuestions().iterator().next().getId(),
-                HttpMethod.DELETE, getHttpEntity(), String.class);
+                HttpMethod.DELETE, getHttpEntity(), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -248,7 +248,7 @@ public class LessonPageIntegrationTest {
         ResponseEntity<DiaryPageDTO> response = testRestTemplate.exchange("/postNewAnswer",
                 HttpMethod.POST, httpEntity, DiaryPageDTO.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getEntry()).isEqualTo("The answer is true. Your Comments: "+diary);
         assertThat(response.getBody().getWrittenDate()).isEqualTo(LocalDate.now().toString());
@@ -266,7 +266,7 @@ public class LessonPageIntegrationTest {
         ResponseEntity<DiaryPageDTO> response = testRestTemplate.exchange("/postNewAnswer",
                 HttpMethod.POST, httpEntity, DiaryPageDTO.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getEntry()).isEqualTo("The answer is false. Your Comments: "+diary);
         assertThat(response.getBody().getWrittenDate()).isEqualTo(LocalDate.now().toString());

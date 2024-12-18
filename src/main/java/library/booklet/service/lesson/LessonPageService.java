@@ -130,7 +130,7 @@ public class LessonPageService {
     public ResponseEntity<?> postNewAnswer(LessonUserAnswerDTO lessonAnswerDTO) {
         try{
             boolean result = evaluateAnswer(lessonAnswerDTO);
-            return ResponseEntity.ok(postAnswerCommentary(result, lessonAnswerDTO));
+            return ResponseEntity.status(HttpStatus.CREATED).body(postAnswerCommentary(result, lessonAnswerDTO));
         } catch(EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

@@ -19,9 +19,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/saveUser")
-    public ResponseEntity<?> saveUser(@RequestBody UserDTO userDto) {
-        return userService.saveUser(userDto);
+    @PostMapping("/createUser")
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDto) {
+        return userService.createUser(userDto);
     }
 
     @PostMapping("/login")

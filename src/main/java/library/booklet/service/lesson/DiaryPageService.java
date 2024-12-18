@@ -78,8 +78,8 @@ public class DiaryPageService {
         }
     }
 
-    public List<DiaryPageEntity> requestDiaryPagesSortByWrittenDate(int pageNumber, int pageSize) {
-        Pageable firstPage = PageRequest.of(pageNumber, pageSize, Sort.by("writtenDate"));
+    public List<DiaryPageEntity> requestDiaryPagesSortByWrittenDate(int pageIndex, int pageSize) {
+        Pageable firstPage = PageRequest.of(pageIndex, pageSize, Sort.by(new Sort.Order(Sort.Direction.ASC,"writtenDate")));
         Slice<DiaryPageEntity> pageSlice = diaryPageRepository.findAll(firstPage);
         return pageSlice.getContent();
     }

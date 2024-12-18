@@ -32,7 +32,7 @@ class UserServiceTest {
     }
 
     @Test
-    void happyPath_saveUser() {
+    void happyPath_createUser() {
         String encodedPass = "encoded";
         String email = "bsh@yahoo.com";
         UserDTO userDTO = new UserDTO();
@@ -41,13 +41,13 @@ class UserServiceTest {
         userEntity.setEmail(email);
         userEntity.setPassword(encodedPass);
 
-        stub_saveUser(userDTO, userEntity, encodedPass);
+        stub_createUser(userDTO, userEntity, encodedPass);
 
-        ResponseEntity<?> result = userService.saveUser(userDTO);
+        ResponseEntity<?> result = userService.createUser(userDTO);
         assertThat(result.getBody()).isEqualTo(userEntity);
     }
 
-    void stub_saveUser(UserDTO userDTO, UserEntity userEntity, String encodedPass) {
+    void stub_createUser(UserDTO userDTO, UserEntity userEntity, String encodedPass) {
         when(bCryptPasswordEncoder.encode(any())).thenReturn(encodedPass);
         when(userRepository.saveAndFlush(eq(userEntity))).thenReturn(userEntity);
         when(userMapper.from(eq(userEntity))).thenReturn(userDTO);

@@ -5,6 +5,7 @@ import library.booklet.entity.DiaryPageEntity;
 import library.booklet.mapper.DiaryPageMapper;
 import library.booklet.service.lesson.DiaryPageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,7 +58,7 @@ public class DiaryPageController {
     @PostMapping("/createDiaryPage")
     public ResponseEntity<DiaryPageEntity> createDiaryPage(@RequestBody DiaryPageDTO diaryPageDTO) {
         DiaryPageEntity diaryPageEntity = diaryPageService.createDiaryPageDTO(diaryPageDTO);
-        return ResponseEntity.ok(diaryPageEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(diaryPageEntity);
     }
 
     @DeleteMapping("/deleteDiaryPages")
@@ -72,9 +73,9 @@ public class DiaryPageController {
     }
 
     @GetMapping("/requestDiaryPages")
-    public ResponseEntity<List<DiaryPageEntity>> requestDiaryPagesSortByWrittenDate(@RequestParam("pageNumber") int pageNumber,
+    public ResponseEntity<List<DiaryPageEntity>> requestDiaryPagesSortByWrittenDate(@RequestParam("pageIndex") int pageIndex,
                                                    @RequestParam("pageSize") int pageSize) {
-        List<DiaryPageEntity> diaryPageEntities = diaryPageService.requestDiaryPagesSortByWrittenDate(pageNumber, pageSize);
+        List<DiaryPageEntity> diaryPageEntities = diaryPageService.requestDiaryPagesSortByWrittenDate(pageIndex, pageSize);
         return ResponseEntity.ok(diaryPageEntities);
     }
 }

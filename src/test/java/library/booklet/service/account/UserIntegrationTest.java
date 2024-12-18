@@ -85,7 +85,7 @@ public class UserIntegrationTest {
     }
 
     @Test
-    void happyPath_saveUser() {
+    void happyPath_createUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("B1");
         userDTO.setLastName("Sh1");
@@ -96,16 +96,16 @@ public class UserIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
-        ResponseEntity<UserEntity> response = testRestTemplate.postForEntity("/saveUser", request, UserEntity.class);
+        ResponseEntity<UserEntity> response = testRestTemplate.postForEntity("/createUser", request, UserEntity.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getEmail()).isEqualTo(email);
 
     }
 
     @Test
-    void invalidEmail_saveUser() {
+    void invalidEmail_createUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("B1");
         userDTO.setLastName("Sh1");
@@ -116,14 +116,14 @@ public class UserIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
-        ResponseEntity<String> response = testRestTemplate.postForEntity("/saveUser", request, String.class);
+        ResponseEntity<String> response = testRestTemplate.postForEntity("/createUser", request, String.class);
 
         assertThat(response.getStatusCode().value()).isEqualTo(400);
         assertThat(response.getBody()).isEqualTo("The email is not valid!");
     }
 
     @Test
-    void repeatedEmail_saveUser() {
+    void repeatedEmail_createUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("B1");
         userDTO.setLastName("Sh1");
@@ -134,7 +134,7 @@ public class UserIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
 
-        ResponseEntity<String> response = testRestTemplate.postForEntity("/saveUser", request, String.class);
+        ResponseEntity<String> response = testRestTemplate.postForEntity("/createUser", request, String.class);
 
         assertThat(response.getStatusCode().value()).isEqualTo(400);
         assertThat(response.getBody()).isEqualTo("The email already exists in the database!");

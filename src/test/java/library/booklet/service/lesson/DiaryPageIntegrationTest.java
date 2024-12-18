@@ -79,7 +79,7 @@ public class DiaryPageIntegrationTest {
         ResponseEntity<DiaryPageEntity> response = testRestTemplate.postForEntity("/createDiaryPage", diaryPageDTO,
                 DiaryPageEntity.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getWrittenDate()).isEqualTo(diaryPageDTO.getWrittenDate());
         assertThat(response.getBody().getEntry()).isEqualTo(diaryPageDTO.getEntry());
     }
@@ -213,7 +213,7 @@ public class DiaryPageIntegrationTest {
         List<DiaryPageEntity> diaryPageEntityList = List.of(diaryPage);
 
         ResponseEntity<List<DiaryPageEntity>> response = testRestTemplate.exchange(
-                "/requestDiaryPages"+"?pageNumber=1"+"&pageSize=2",
+                "/requestDiaryPages"+"?pageIndex=1"+"&pageSize=2",
                 HttpMethod.GET, getHttpEntity(), new ParameterizedTypeReference<List<DiaryPageEntity>>() {});
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

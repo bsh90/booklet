@@ -220,7 +220,7 @@ class LessonPageServiceTest {
         diaryPageEntity.setWrittenDate(LocalDate.of(2024, 9, 9));
         diaryPageEntity.setEntry("The answer is " + "true" + ". Comments: " + commentary);
         DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getWrittenDate(), diaryPageEntity.getEntry());
-        ResponseEntity<?> response = ResponseEntity.ok(diaryPageDTO);
+        ResponseEntity<?> response = ResponseEntity.status(HttpStatus.CREATED).body(diaryPageDTO);
 
         stub_HappyPath_PostNewAnswer(inputLessonUserAnswerDTO, questionSolutionEntity, diaryPageEntity, diaryPageDTO);
 
@@ -250,7 +250,7 @@ class LessonPageServiceTest {
         diaryPageEntity.setWrittenDate(LocalDate.of(2024, 9, 9));
         diaryPageEntity.setEntry("The answer is " + "false" + ". Comments: " + commentary);
         DiaryPageDTO diaryPageDTO = new DiaryPageDTO(diaryPageEntity.getWrittenDate(), diaryPageEntity.getEntry());
-        ResponseEntity<?> response = ResponseEntity.ok(diaryPageDTO);
+        ResponseEntity<?> response = ResponseEntity.status(HttpStatus.CREATED).body(diaryPageDTO);
 
         stub_HappyPath_PostNewAnswer(inputLessonUserAnswerDTO, questionSolutionEntity, diaryPageEntity, diaryPageDTO);
 

@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class UserService {
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public ResponseEntity<?> saveUser(UserDTO userDto) {
+    public ResponseEntity<?> createUser(UserDTO userDto) {
         UserEntity foundUser = userRepository.findByEmail(userDto.getEmail());
         if (foundUser != null) {
             return ResponseEntity.status(400).body("The email already exists in the database!");
@@ -46,7 +47,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity userEntity = userRepository.saveAndFlush(user);
 
-        return ResponseEntity.ok(userEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userEntity);
     }
 
     public List<UserEntity> findAllUsers() {
