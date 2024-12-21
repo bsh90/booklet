@@ -22,13 +22,15 @@ import java.util.List;
 @NoArgsConstructor
 public class UserService {
 
-    @Autowired
     UserRepository userRepository;
+    UserMapper userMapper;
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    UserMapper userMapper;
-
-    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     public ResponseEntity<?> createUser(UserDTO userDto) {
         UserEntity foundUser = userRepository.findByEmail(userDto.getEmail());

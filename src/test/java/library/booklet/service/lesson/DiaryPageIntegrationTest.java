@@ -89,7 +89,7 @@ public class DiaryPageIntegrationTest {
         ResponseEntity<?> response = testRestTemplate.exchange("/deleteDiaryPages"+"?id="+diaryPage.getId(),
                 HttpMethod.DELETE, getHttpEntity(), String.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @NotNull

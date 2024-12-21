@@ -19,10 +19,7 @@ import java.util.List;
 @RestController
 public class DiaryPageController {
 
-    @Autowired
     DiaryPageService diaryPageService;
-
-    @Autowired
     DiaryPageMapper diaryPageMapper;
 
     public DiaryPageController(DiaryPageService diaryPageService,

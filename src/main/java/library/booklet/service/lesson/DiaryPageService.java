@@ -20,15 +20,17 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 @NoArgsConstructor
 public class DiaryPageService {
 
-    @Autowired
     DiaryPageRepository diaryPageRepository;
+    DiaryPageMapper diaryPageMapper;
 
     @Autowired
-    DiaryPageMapper diaryPageMapper;
+    public DiaryPageService(DiaryPageRepository diaryPageRepository, DiaryPageMapper diaryPageMapper) {
+        this.diaryPageRepository = diaryPageRepository;
+        this.diaryPageMapper = diaryPageMapper;
+    }
 
     public ResponseEntity<?> getDiaryPageDTO(Long id) {
         try {
@@ -72,7 +74,7 @@ public class DiaryPageService {
         try{
             findDiaryPageEntity(id);
             diaryPageRepository.deleteById(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         } catch(EntityNotFoundException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

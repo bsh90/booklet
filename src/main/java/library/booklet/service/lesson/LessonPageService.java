@@ -31,30 +31,27 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 @NoArgsConstructor
 public class LessonPageService {
 
-    @Autowired
     LessonRepository lessonRepository;
-
-    @Autowired
     QuestionSolutionRepository questionSolutionRepository;
-
-    @Autowired
     DiaryPageRepository diaryPageRepository;
-
-    @Autowired
     LessonMapper lessonMapper;
-
-    @Autowired
-    QuestionSolutionMapper lessonSolutionMapper;
-
-    @Autowired
     DiaryPageMapper diaryPageMapper;
+    QuestionSolutionMapper questionSolutionMapper;
 
     @Autowired
-    QuestionSolutionMapper questionSolutionMapper;
+    public LessonPageService(LessonRepository lessonRepository, QuestionSolutionRepository questionSolutionRepository,
+                            DiaryPageRepository diaryPageRepository, LessonMapper lessonMapper,
+                            QuestionSolutionMapper questionSolutionMapper, DiaryPageMapper diaryPageMapper) {
+        this.lessonRepository = lessonRepository;
+        this.questionSolutionRepository = questionSolutionRepository;
+        this.diaryPageRepository = diaryPageRepository;
+        this.lessonMapper = lessonMapper;
+        this.questionSolutionMapper = questionSolutionMapper;
+        this.diaryPageMapper = diaryPageMapper;
+    }
 
     public ResponseEntity<?> getLessonDTO(Long id) {
         Optional<LessonEntity> lessonEntity = lessonRepository.findById(id);
@@ -68,7 +65,7 @@ public class LessonPageService {
     public QuestionSolutionDTO getLessonSolutionDTO(Long lessonPageEntityId) {
         QuestionSolutionEntity questionSolutionEntity = questionSolutionRepository.findById(lessonPageEntityId)
                 .orElseThrow(()-> new EntityNotFoundException("Question Entity not found"));
-        return lessonSolutionMapper.from(questionSolutionEntity);
+        return questionSolutionMapper.from(questionSolutionEntity);
     }
 
     public LessonDTO postNewLesson(LessonPostDTO lessonPostDTO) {

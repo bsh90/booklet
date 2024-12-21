@@ -37,9 +37,8 @@ class LessonPageServiceTest {
     QuestionSolutionRepository questionSolutionRepository;
     DiaryPageRepository diaryPageRepository;
     LessonMapper lessonMapper;
-    QuestionSolutionMapper lessonSolutionMapper;
-    DiaryPageMapper diaryPageMapper;
     QuestionSolutionMapper questionSolutionMapper;
+    DiaryPageMapper diaryPageMapper;
 
     @BeforeEach
     void setUp() {
@@ -47,16 +46,14 @@ class LessonPageServiceTest {
         questionSolutionRepository = mock(QuestionSolutionRepository.class);
         diaryPageRepository = mock(DiaryPageRepository.class);
         lessonMapper = mock(LessonMapper.class);
-        lessonSolutionMapper = mock(QuestionSolutionMapper.class);
-        diaryPageMapper = mock(DiaryPageMapper.class);
         questionSolutionMapper = mock(QuestionSolutionMapper.class);
+        diaryPageMapper = mock(DiaryPageMapper.class);
         lessonPageService = new LessonPageService(lessonRepository,
                 questionSolutionRepository,
                 diaryPageRepository,
                 lessonMapper,
-                lessonSolutionMapper,
-                diaryPageMapper,
-                questionSolutionMapper);
+                questionSolutionMapper,
+                diaryPageMapper);
     }
 
     @Test
@@ -99,7 +96,7 @@ class LessonPageServiceTest {
 
     void stub_getLessonSolutionDTO(Long id, QuestionSolutionEntity questionSolutionEntity, QuestionSolutionDTO questionSolutionDTO) {
         when(questionSolutionRepository.findById(id)).thenReturn(Optional.ofNullable(questionSolutionEntity));
-        when(lessonSolutionMapper.from(questionSolutionEntity)).thenReturn(questionSolutionDTO);
+        when(questionSolutionMapper.from(questionSolutionEntity)).thenReturn(questionSolutionDTO);
     }
 
     @Test

@@ -142,7 +142,7 @@ public class LessonPageIntegrationTest {
         ResponseEntity<?> response = testRestTemplate.exchange("/deleteLesson"+"?id="+lesson.getId(),
                 HttpMethod.DELETE, getHttpEntity(), Void.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -233,7 +233,7 @@ public class LessonPageIntegrationTest {
                         "?id="+lesson.getQuestions().iterator().next().getId(),
                 HttpMethod.DELETE, getHttpEntity(), Void.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test

@@ -23,8 +23,11 @@ import java.util.List;
 @RestController
 public class LessonPageController {
 
-    @Autowired
     LessonPageService lessonPageService;
+
+    public LessonPageController(LessonPageService lessonPageService) {
+        this.lessonPageService = lessonPageService;
+    }
 
     @GetMapping("/getLessonPageById")
     public ResponseEntity<?> getLesson(@RequestParam("id") Long id) {
@@ -40,7 +43,7 @@ public class LessonPageController {
     @DeleteMapping("/deleteLesson")
     public ResponseEntity<Void> deleteLesson(@RequestParam("id") Long lessonId) {
         lessonPageService.deleteLesson(lessonId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/updateLesson")
@@ -57,7 +60,7 @@ public class LessonPageController {
     @DeleteMapping("/deleteQuestion")
     public ResponseEntity<Void> deleteQuestion(@RequestParam("id") Long questionId) {
         lessonPageService.deleteQuestion(questionId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/postNewAnswer")

@@ -16,8 +16,11 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    @Autowired
     UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/createUser")
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDto) {
